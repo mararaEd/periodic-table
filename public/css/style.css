@@ -1733,8 +1733,8 @@ body {
 .compare-body {
   background-image: linear-gradient(to right bottom, #ecb7ec, #0a2738);
   padding-bottom: 2rem;
-  min-height: 100vh;
   align-items: flex-start;
+  height: auto;
 }
 
 .btn--sort {
