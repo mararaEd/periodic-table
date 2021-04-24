@@ -992,6 +992,7 @@ body {
 }
 
 .menu {
+  z-index: 8999999999999998000000000000000;
   position: fixed;
   top: 2rem;
   right: 2rem;
@@ -1067,7 +1068,7 @@ body {
   transform: rotate(135deg);
 }
 .menu__content {
-  z-index: 9000000000000;
+  z-index: 8999999999999998000000000000000;
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s;
