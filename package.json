@@ -4,17 +4,17 @@
   "description": "Informative periodic table",
   "main": "index.js",
   "scripts": {
-    "start": "sass sass/main.scss public/css/style.css --watch",
+    "start": "node server.js",
     "st": "nodemon server.js",
     "live": "live-server",
-    "compile:sass": "sass sass/main.scss css/style.comp.css",
+    "compile:sass": "sass sass/main.scss public/css/style.css --watch",
     "prefix:css": "npx postcss css/style.comp.css --use autoprefixer -d css",
     "compress:css": "cleancss -o css/style.css css/style.comp.css",
     "build:css": "npm-run-all compile:sass prefix:css compress:css delete:css",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
     "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
-  "author": "Marara Edosa",
+  "author": "Marara Edosa and Naol Abidsa",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
@@ -28,5 +28,8 @@
     "core-js": "^2.6.11",
     "nodemon": "^2.0.7",
     "parcel-bundler": "^1.12.3"
+  },
+  "engines": {
+    "node": ">=10.0.0"
   }
 }
