@@ -1,10 +1,14 @@
 const path = require("path");
 const express = require("express");
+const helmet = require("helmet");
+
 const viewRoutes = require("./routes/viewRoutes.js");
 const elementRoutes = require("./routes/elementRoutes.js");
+
 const app = express();
 
 // Middlewares
+app.use(helmet());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
