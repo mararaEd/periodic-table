@@ -105,6 +105,7 @@ const init = () => {
       });
 
       // prepare Ui
+      document.documentElement.style.setProperty("--bH", "auto");
       document.querySelector(".com-row-container")?.remove();
 
       document

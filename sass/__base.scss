@@ -67,6 +67,7 @@ html {
   --oH: 4.3rem;
   --hO: 1.8rem;
   --hT: 2.2rem;
+  --bH: 100vw;
 
   --glownormalGlow: normalGlow;
   @include respond(1, $width / 1rem, $h1, $h2);

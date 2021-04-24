@@ -57,6 +57,7 @@ html {
   --oH: 4.3rem;
   --hO: 1.8rem;
   --hT: 2.2rem;
+  --bH: 100vw;
   --glownormalGlow: normalGlow;
   --glow1: glow--1;
   --glow2: glow--2;
@@ -1734,7 +1735,7 @@ body {
   background-image: linear-gradient(to right bottom, #ecb7ec, #0a2738);
   padding-bottom: 2rem;
   align-items: flex-start;
-  height: auto;
+  height: var(--bH);
 }
 
 .btn--sort {

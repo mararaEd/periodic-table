@@ -8510,13 +8510,14 @@ var init = function init() {
                 el.classList.remove("form__elements-elm--check");
               }); // prepare Ui
 
+              document.documentElement.style.setProperty("--bH", "auto");
               document.querySelector(".com-row-container")?.remove();
               document.querySelector(".comp-container").insertAdjacentHTML("beforeend", "<div class=\"com-row-container\"></div>");
 
               _loader.default.startAnimation(document.querySelector(".com-row-container"));
 
               sBtn.classList.add("btn--sort--sh");
-              _context.next = 14;
+              _context.next = 15;
               return (0, _axios.default)({
                 method: "POST",
                 url: "/api/v1/element",
@@ -8526,7 +8527,7 @@ var init = function init() {
                 }
               });
 
-            case 14:
+            case 15:
               result = _context.sent;
 
               _loader.default.stopAnimation(document.querySelector(".com-row-container"));
@@ -8534,20 +8535,20 @@ var init = function init() {
               document.querySelector(".com-row-container").remove();
               renderHtml(result.data.data);
               data = result.data.data;
-              _context.next = 24;
+              _context.next = 25;
               break;
 
-            case 21:
-              _context.prev = 21;
+            case 22:
+              _context.prev = 22;
               _context.t0 = _context["catch"](0);
               console.error(_context.t0);
 
-            case 24:
+            case 25:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[0, 21]]);
+      }, _callee, null, [[0, 22]]);
     }));
 
     return function (_x) {
@@ -9131,7 +9132,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54610" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63812" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
