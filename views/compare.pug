@@ -1,0 +1,33 @@
+extends base
+
+block content 
+  body.compare-body
+    .comp-container
+      h1.h1 Periodo Compare 
+      form.form 
+        .form__group
+          input(placeholder="select elements" type="text").form__input   
+          .form__elements
+            .form__elements-container#name
+              each element in elements
+                .form__elements-elm
+                  span(data-atN=element.atomicNumber)=element.name
+                  .checkbox
+                    svg 
+                      use(xlink:href="/img/sprites.svg#icon-check")
+        
+        - const handleName = (name) => {const capitalI = [...name].findIndex((el, i) => el === el.toUpperCase());return capitalI === -1 ? name :  `${name.slice(0, capitalI)} ${name.slice(capitalI)}`;};  
+        .form__group  
+          .form__cri your criteria
+          .form__criteria
+            .form__elements-container#prop
+              each property in properties
+                .form__elements-elm
+                  span=handleName(property)
+                  .checkbox
+                    svg 
+                      use(xlink:href="/img/sprites.svg#icon-check")
+        button.form__elements-button.form__elements-button--b &rarr;    
+      button.btn.btn--sort &downarrow; DESC
+
+    script(src="/js/bundle.js")

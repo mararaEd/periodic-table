@@ -1,0 +1,93 @@
+@use "sass:math";
+@use "sass:list";
+
+@function calcRo($width, $h1, $h2) {
+  $rot: 90deg - math.atan(($h1 + $h2) / ($width * 3))
+    math.atan(($h1 + $h2) / ($width * 3))-90deg 90deg -
+    math.atan(($h1 + $h2) / ($width * 5)) math.atan(($h1 + $h2) / ($width * 5))-90deg
+    90deg - math.atan(($h1 + $h2) / ($width * 7))
+    math.atan(($h1 + $h2) / ($width * 7))-90deg;
+
+  $heights: math.sqrt(($width * 3) * ($width * 3)+ ($h1 + $h2) * ($h1 + $h2)) +
+    0.5 math.sqrt(($width * 5) * ($width * 5)+ ($h1 + $h2) * ($h1 + $h2)) + 0.5
+    math.sqrt(($width * 7) * ($width * 7)+ ($h1 + $h2) * ($h1 + $h2)) + 6;
+  @return $rot $heights;
+}
+
+@function calcSh($width) {
+  $counter: $width * 0.9965995;
+  $counter-2: $width * 0.2092597;
+  $counter-3: -$width * 0.21449123;
+  $counter-4: $width * 0.156944;
+  $counter-5: -$counter-4;
+
+  $shadow: $counter 0 $lineColor;
+  $shadow-mod: $counter 0 $lineColor;
+  $shadow-m: $counter 0 $lineColor;
+  $shadow-1: $counter-2 0 $lineColor;
+  $shadow-3: $counter-3 0 $lineColor;
+  $shadow-4: $counter-4 0 $lineColor;
+  $shadow-5: $counter-5 0 $lineColor;
+  $shadow-6: $counter-5 0 rgba($lineColor, 0.07);
+  $shadow-7: $counter-5 0 $lineColor;
+
+  @for $i from 1 through 7 {
+    $shadow: $shadow, $counter * $i 0 $lineColor;
+  }
+
+  @for $i from 1 through 17 {
+    $shadow-mod: $shadow-mod, $counter * $i 0 $lineColor;
+  }
+
+  @for $i from 1 through 31 {
+    $shadow-m: $shadow-m, $counter * $i 0 $lineColor;
+  }
+
+  @for $i from 1 through 5 {
+    $shadow-3: $shadow-3, $counter-3 * $i 0 $lineColor;
+  }
+
+  @for $i from 1 through 2 {
+    $shadow-4: $shadow-4, $counter-4 * $i 0 $lineColor;
+  }
+
+  @for $i from 1 through 6 {
+    $shadow-5: $shadow-5, $counter-5 * $i 0 $lineColor;
+  }
+
+  @for $i from 1 through 6 {
+    $shadow-6: $shadow-6, $counter-5 * $i 0 rgba($lineColor, 0.07);
+  }
+
+  @return (
+    "shadow": $shadow,
+    "shadow-mod": $shadow-mod,
+    "shadow-m": $shadow-m,
+    "shadow-3": $shadow-3,
+    "shadow-4": $shadow-4,
+    "shadow-5": $shadow-5,
+    "shadow-6": $shadow-6
+  );
+}
+
+// first
+// height / width * 3;
+
+// second
+// height / width * 5;
+
+// third
+// height / width * 7;
+
+@mixin line($a, $h) {
+  animation: var(--glow#{$a}) 1s 0.72s ease-out forwards;
+  content: " ";
+  position: absolute;
+  top: 0;
+  transform-origin: bottom;
+  width: 1px;
+  height: $h;
+  background-color: $lineColor;
+  opacity: 0;
+  z-index: -1;
+}

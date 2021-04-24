@@ -1,0 +1,39 @@
+// colors
+$nonMetal: #f1ff90;
+$alkaliMetal: #ff6666;
+$alkaliEarthMetal: #fedead;
+$lanthanoid: #ffbffe;
+$actinoid: #ff99cb;
+$metalloid: #cccc9a;
+$metal: #f1ff90;
+$transitionMetal: #ffc0bf;
+$nobleGas: #c1feff;
+$halogen: #e8e8e8;
+$postTransitionMetal: #cccccc;
+
+$elements: (
+  "nonmetal": $nonMetal,
+  "alkaliMetal": $alkaliMetal,
+  "alkalineEarthMetal": $alkaliEarthMetal,
+  "metal": $nonMetal,
+  "actinoid": $actinoid,
+  "metalloid": $metalloid,
+  "lanthanoid": $lanthanoid,
+  "transitionMetal": $transitionMetal,
+  "nobleGas": $nobleGas,
+  "postTransitionMetal": $postTransitionMetal,
+  "halogen": $halogen,
+);
+
+$bp-1: 76.25em;
+$bp-2: 70.125em;
+$bp-3: 63.68em;
+$bp-4: 55.6em;
+$bp-5: 49.625em;
+$bp-6: 42.875em;
+$bp-7: 37em;
+
+$bp-c1: 45.125em;
+$bp-c2: 32.5em;
+
+$lineColor: rgba(255, 255, 255, 1);

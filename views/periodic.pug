@@ -1,0 +1,50 @@
+extends base
+
+
+mixin elm(sym,atN,group,i)
+  div(class=`elm elm--${group}`)
+    span(class=`${atN >= 100 ? 'elm__atn--s' : ""} elm__atN`)= atN
+    span.elm__sym= sym
+
+block content 
+  body.per-container
+  - const handleName = (name) =>name.split(" ").map((el, i) => (i !== 0 ? el[0].toUpperCase() + el.slice(1) : el)).join("");
+
+    .menu
+      .menu__back 
+        span.menu__line
+      .menu__content 
+        ul.menu__content-ul
+          form.form.menu__content-form
+            .menu__content-form-group 
+              input(type="text" placeholder="element").menu__content-form-input 
+              svg.menu__content-form-icon
+                use(xlink:href='/img/sprites.svg#icon-search')
+          li.menu__content-list
+            a(href="/compare").menu__content-link Compare    
+          li.menu__content-list
+            a.menu__content-link#key Show key       
+    h1.h1.h1--p Periodic Table
+    .container
+      each elmGroup,i in elements
+        div(class=`row row--${i+1}`)
+            each elm in elmGroup 
+              +elm(elm.symbol,elm.atomicNumber,handleName(elm.groupBlock) ,i+1)
+    .footer 
+      <p class="footer__text">2021 &copy; developed by <span>Marara Edosa</span> & <span>Naol Abdisa</span></p>
+    .popup
+       svg.popup__close
+        use(xlink:href='/img/sprites.svg#icon-cross')
+       .popup__content 
+
+    - const t = [ "nonmetal","alkaliMetal","alkalineEarthMetal","metal","actinoid","metalloid","lanthanoid","transitionMetal","nobleGas","postTransitionMetal","halogen" ]
+    .key 
+      each el in t 
+        .key__description 
+          div(class=`elm--${el}`).key__color 
+          .key__text=handleName(el)
+
+    script( src="/js/bundle.js")
+    
+
+            
