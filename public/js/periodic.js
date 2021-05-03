@@ -128,8 +128,8 @@ module.exports = () => {
 
   const loadProperties = async ({ field, query }) => {
     try {
+      document.querySelector(".popup__element")?.remove();
       popup.classList.add("popup--show");
-      popupContent.innerHTML = "";
 
       const cont = document.createElement("div");
       cont.classList.add("popup__element");

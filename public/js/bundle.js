@@ -8451,7 +8451,7 @@ var init = function init() {
     value = e.key.length > 1 ? value.slice(0, -1) : value + e.key;
     console.log(value);
     var filteredElm = allElements.filter(function (el) {
-      return !el.firstElementChild.textContent.toLowerCase().includes(value);
+      return !el.firstElementChild.textContent.toLowerCase().includes(value.toLowerCase());
     });
     allElements.forEach(function (el) {
       return el.classList.remove("form__elements-elm--h");
@@ -8708,8 +8708,8 @@ module.exports = function () {
             case 0:
               field = _ref.field, query = _ref.query;
               _context.prev = 1;
+              document.querySelector(".popup__element")?.remove();
               popup.classList.add("popup--show");
-              popupContent.innerHTML = "";
               cont = document.createElement("div");
               cont.classList.add("popup__element");
               popupContent.appendChild(cont);

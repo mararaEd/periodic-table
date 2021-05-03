@@ -43,7 +43,10 @@ const init = () => {
     console.log(value);
 
     const filteredElm = allElements.filter(
-      (el) => !el.firstElementChild.textContent.toLowerCase().includes(value)
+      (el) =>
+        !el.firstElementChild.textContent
+          .toLowerCase()
+          .includes(value.toLowerCase())
     );
 
     allElements.forEach((el) => el.classList.remove("form__elements-elm--h"));
