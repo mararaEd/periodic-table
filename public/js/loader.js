@@ -1,6 +1,12 @@
 let intervalId = "";
 const elm = document.documentElement.style;
 
+const setProperty = function (...values) {
+  values.forEach((val, i) => {
+    elm.setProperty(`--anim${i + 1}`, val);
+  });
+};
+
 exports.startAnimation = function (elmI) {
   const loader = `
   <div class="loader">
@@ -31,20 +37,17 @@ exports.startAnimation = function (elmI) {
     },
   ];
 
-  elm.setProperty("--anim1", orderedA[0].x);
-  elm.setProperty("--anim2", orderedA[0].y);
+  setProperty(orderedA[0].x, orderedA[0].y);
 
   intervalId = setInterval(() => {
     if (i === 1) {
-      elm.setProperty("--anim1", orderedA[1].x);
-      elm.setProperty("--anim2", orderedA[1].y);
+      setProperty(orderedA[1].x, orderedA[1].y);
       orderedA.reverse();
       return i++;
     }
 
     if (i === 5) {
-      clipO.reverse();
-      clipO.forEach((el, i) => {
+      clipO.reverse().forEach((el, i) => {
         allLoaders[i].style.clipPath = `inset(${el}rem 0 0 0)`;
       });
 
@@ -53,21 +56,14 @@ exports.startAnimation = function (elmI) {
       sec = !sec;
       return (i = 1);
     }
-    elm.setProperty("--anim1", `moveX${i} ${commonX}`);
-    elm.setProperty("--anim2", `moveY${i} ${commonY}`);
 
-    if (sec) {
-      elm.setProperty("--anim1", `moveXO${i} ${commonX}`);
-      elm.setProperty("--anim2", `moveY${i} ${commonY}`);
-    }
+    setProperty(`moveX${i} ${commonX}`, `moveY${i} ${commonY}`);
 
+    if (sec) setProperty(`moveXO${i} ${commonX}`, `moveY${i} ${commonY}`);
     i++;
   }, 305);
 };
-
-exports.stopAnimation = (elmI) => {
+exports.stopAnimation = () => {
   clearInterval(intervalId);
-  elmI.firstElementChild?.remove();
 };
-
 exports.delInterval = () => clearInterval(intervalId);

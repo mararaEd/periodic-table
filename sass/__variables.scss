@@ -1,15 +1,16 @@
 // colors
-$nonMetal: #f1ff90;
-$alkaliMetal: #ff6666;
-$alkaliEarthMetal: #fedead;
-$lanthanoid: #ffbffe;
-$actinoid: #ff99cb;
-$metalloid: #cccc9a;
-$metal: #f1ff90;
-$transitionMetal: #ffc0bf;
-$nobleGas: #c1feff;
-$halogen: #e8e8e8;
-$postTransitionMetal: #cccccc;
+$nonMetal: #00f037;
+$alkaliMetal: #fc3385;
+$alkaliEarthMetal: #f77;
+$lanthanoid: #ffd04c;
+$actinoid: #8ef076;
+$metalloid: #339b8b;
+$metal: #f7f7f7;
+$transitionMetal: #47c2e7;
+$nobleGas: #df34f0;
+$halogen: #9b5af3;
+$post-TransitionMetal: #cdb1a1;
+$postTransitionMetal: #cdb1a1;
 
 $elements: (
   "nonmetal": $nonMetal,
@@ -21,7 +22,8 @@ $elements: (
   "lanthanoid": $lanthanoid,
   "transitionMetal": $transitionMetal,
   "nobleGas": $nobleGas,
-  "postTransitionMetal": $postTransitionMetal,
+  "post-TransitionMetal": $post-TransitionMetal,
+  "postTransitionMetal": $post-TransitionMetal,
   "halogen": $halogen,
 );
 
@@ -32,8 +34,11 @@ $bp-4: 55.6em;
 $bp-5: 49.625em;
 $bp-6: 42.875em;
 $bp-7: 37em;
+$bp-s: 46.25em;
+$bp-last: 23.875em;
 
 $bp-c1: 45.125em;
 $bp-c2: 32.5em;
 
-$lineColor: rgba(255, 255, 255, 1);
+$lineColor: #191919;
+$color-bl: #191919;

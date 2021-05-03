@@ -6,25 +6,45 @@ mixin elm(sym,atN,group,i)
     span(class=`${atN >= 100 ? 'elm__atn--s' : ""} elm__atN`)= atN
     span.elm__sym= sym
 
+mixin nav(i,n,c)
+  a(class=`btn btn--ba nav__item ${c}` id=`${n === 'key' ? n : ""}`)
+    svg.nav__item-icon
+      use(xlink:href=`/img/sprites.svg#icon-${i}`)
+    p.btn__text=n
+    
+
 block content 
   body.per-container
   - const handleName = (name) =>name.split(" ").map((el, i) => (i !== 0 ? el[0].toUpperCase() + el.slice(1) : el)).join("");
+  - const t = [ "nonmetal","alkaliMetal","alkalineEarthMetal","metal","actinoid","metalloid","lanthanoid","transitionMetal","nobleGas","postTransitionMetal","halogen" ]
+    
+    nav.nav
+      .key 
+        each el in t 
+          .key__description 
+            div(class=`elm--${el}`).key__color 
+            .key__text=handleName(el)
+      .logo-box 
+        img(src="/img/logo.png" alt="logo" class="logo") 
+        .logo-text Periodic-mn
+      form.fform
+        .fform__group 
+          input(type="text" placeholder="element").fform__input#search 
+          svg.fform__icon
+            use(xlink:href='/img/sprites.svg#icon-search') 
+      .btn.btn--ba.nav__item.nav__item-c 
+        svg.nav__item-icon
+          use(xlink:href='/img/sprites.svg#icon-cog')
+        p.btn__text Settings
+        .nav__item-menu 
+          ul.nav__item-ul
+            a.nav__item-button#custom customize units 
+            a.nav__item-button Dark theme
+      +nav("key", "key", "nav__item--1")
+      a(class="btn btn--ba nav__item" href="/compare") Launch compare
 
-    .menu
-      .menu__back 
-        span.menu__line
-      .menu__content 
-        ul.menu__content-ul
-          form.form.menu__content-form
-            .menu__content-form-group 
-              input(type="text" placeholder="element").menu__content-form-input 
-              svg.menu__content-form-icon
-                use(xlink:href='/img/sprites.svg#icon-search')
-          li.menu__content-list
-            a(href="/compare").menu__content-link Compare    
-          li.menu__content-list
-            a.menu__content-link#key Show key       
-    h1.h1.h1--p Periodic Table
+                 
+    h1.h1.h1--p Periodic Table Of The Elements
     .container
       each elmGroup,i in elements
         div(class=`row row--${i+1}`)
@@ -33,16 +53,63 @@ block content
     .footer 
       <p class="footer__text">2021 &copy; developed by <span>Marara Edosa</span> & <span>Naol Abdisa</span></p>
     .popup
-       svg.popup__close
-        use(xlink:href='/img/sprites.svg#icon-cross')
-       .popup__content 
+      .popup__content
+        svg.popup__close
+          use(xlink:href='/img/sprites.svg#icon-cross')
+        //- h2.h2.h2--black customize your units
+        //- .fform__container
+        //-   .fform
+        //-     .fform__group
+        //-       .fform__label g/mol
+        //-       .fform__default
+        //-         .fform__default-text g/mol
+        //-         svg.fform__default-icon
+        //-           use(xlink:href='/img/sprites.svg#icon-chevron-down') 
+        //-         .fform__default-options
+        //-           .fform__default-optionsOpt kg/m3 
+        //-           .fform__default-optionsOpt test option1 
+        //-           .fform__default-optionsOpt test option 2
+        //-           .fform__default-optionsOpt g/mol
+        //-           .fform__default-optionsOpt test option 4
+        //-     .fform__group
+        //-       .fform__label g/mol
+        //-       .fform__default
+        //-         .fform__default-text g/mol
+        //-         .fform__default-options
+        //-           .fform__default-optionsOpt kg/m3 
+        //-           .fform__default-optionsOpt test option1 
+        //-           .fform__default-optionsOpt test option 2
+        //-           .fform__default-optionsOpt g/mol
+        //-           .fform__default-optionsOpt test option 
+        //-     .fform__group
+        //-       .fform__label g/mol
+        //-       .fform__default
+        //-         .fform__default-text g/mol
+        //-         .fform__default-options
+        //-           .fform__default-optionsOpt kg/m3 
+        //-           .fform__default-optionsOpt test option1 
+        //-           .fform__default-optionsOpt test option 2
+        //-           .fform__default-optionsOpt g/mol
+        //-           .fform__default-optionsOpt test option 4
+        //-     .fform__group
+        //-       .fform__label g/mol
+        //-       .fform__default
+        //-         .fform__default-text g/mol
+        //-         .fform__default-options
+        //-           .fform__default-optionsOpt kg/m3 
+        //-           .fform__default-optionsOpt test option1 
+        //-           .fform__default-optionsOpt test option 2
+        //-           .fform__default-optionsOpt g/mol
+        //-           .fform__default-optionsOpt test option 4    
+        //-   a.btn.btn--sa.btn--form Done               
+                   
+            
+                   
 
-    - const t = [ "nonmetal","alkaliMetal","alkalineEarthMetal","metal","actinoid","metalloid","lanthanoid","transitionMetal","nobleGas","postTransitionMetal","halogen" ]
-    .key 
-      each el in t 
-        .key__description 
-          div(class=`elm--${el}`).key__color 
-          .key__text=handleName(el)
+
+         
+
+    
 
     script( src="/js/bundle.js")
     

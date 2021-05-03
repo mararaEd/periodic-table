@@ -9,10 +9,17 @@ exports.getAllElements = async (req, res, next) => {
     );
 
     let elements;
-    if (req.query.name)
-      elements = await Element.find({
+    if (req.query.name) {
+      elements = await Element.find().find({
         name: { $regex: query.name, $options: "ix" },
       });
+
+      elements.sort((a, b) => {
+        if (a.name.toLowerCase().startsWith(req.query.name)) return -1;
+        if (b.name.toLowerCase().startsWith(req.query.name)) return 1;
+        return 0;
+      });
+    }
 
     if (!elements) elements = await Element.find(req.query);
 

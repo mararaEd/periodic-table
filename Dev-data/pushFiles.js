@@ -46,6 +46,7 @@ const modifya2 = async () => {
       "groupBlock",
       "oxidationStates",
       "atomicNumber",
+      "electronicConfiguration",
     ];
 
     const myOriginal = JSON.parse(

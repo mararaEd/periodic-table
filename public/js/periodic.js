@@ -2,25 +2,64 @@ import axios from "axios";
 import spinController from "./loader";
 
 module.exports = () => {
+  // Elements
   const container = document.querySelector(".container");
   const btnKeyC = document.getElementById("key");
-  const menuHum = document.querySelector(".menu__back");
-  const menu = document.querySelector(".menu");
+  const popup = document.querySelector(".popup");
+  const popupContent = document.querySelector(".popup__content");
+  const searchBtn = document.querySelector(".fform__icon");
+  const searchInp = document.querySelector(".fform__input");
+
+  let curDef;
+  let curOption;
+
+  const rem = (d, elm) => {
+    curDef.classList.remove("fform__default--b");
+    curOption.classList.remove("fform__default-options--v");
+  };
 
   document.addEventListener("click", (e) => {
-    if (e.target.closest(".menu__back")) {
-      // control humburger
-      menuHum.classList.toggle("menu__back--cl");
-      // constrol menu
-      menu.classList.toggle("menu--sh");
+    if (e.target.closest(".nav__item-c"))
+      return e.target.closest(".nav__item-c").classList.toggle("nav__item--v");
+
+    if (document.querySelector(".nav__item--v"))
+      document.querySelector(".nav__item--v").classList.remove("nav__item--v");
+  });
+  // Implementing options for units
+  popup.addEventListener("click", (e) => {
+    if (
+      !e.target.closest(".popup__content") ||
+      e.target.closest(".popup__close")
+    ) {
+      popup.classList.remove("popup--show");
+      spinController.stopAnimation(popupContent);
     }
 
-    if (menu.classList.contains("menu--sh") && !e.target.closest(".menu")) {
-      // control humburger
-      menuHum.classList.remove("menu__back--cl");
-      // constrol menu
-      menu.classList.remove("menu--sh");
+    if (e.target.matches(".fform__default-optionsOpt")) {
+      // get the text and change
+      const p = e.target.parentElement.parentElement;
+
+      p.firstElementChild.textContent = e.target.textContent;
+      return rem();
     }
+
+    if (e.target.closest(".fform__default")) {
+      if (curDef) rem();
+
+      curDef = e.target.closest(".fform__default");
+      curOption = curDef.lastElementChild;
+
+      Array.from(curOption.children).forEach((elm) =>
+        elm.textContent === curDef.firstElementChild.textContent
+          ? elm.classList.add("fform__default-optionsOpt--c")
+          : elm.classList.remove("fform__default-optionsOpt--c")
+      );
+
+      curDef.classList.add("fform__default--b");
+      return curOption.classList.add("fform__default-options--v");
+    }
+
+    if (!e.target.closest(".fform__default-options") && curOption) return rem();
   });
 
   btnKeyC.addEventListener("click", (e) =>
@@ -28,7 +67,7 @@ module.exports = () => {
   );
 
   const handleName = (name) => {
-    const capitalI = [...name].findIndex((el, i) => el === el.toUpperCase());
+    const capitalI = [...name].findIndex((el) => el === el.toUpperCase());
     return capitalI === -1
       ? name
       : `${name.slice(0, capitalI)} ${name.slice(capitalI)}`;
@@ -65,7 +104,6 @@ module.exports = () => {
     });
 
     return `
-  <div class="popup__element">
   <h2 class="elem__sym">${prop.symbol}</h2>
   <p class="elem__group">${handleName(prop.groupBlock)}</p>
   <p class="elem__name">${prop.name}</p>
@@ -85,64 +123,55 @@ module.exports = () => {
     <span class="elm__p c">protons</span>
     <span class="elm__n e">neutrons</span>
   </div>
-</div>
   `;
   };
 
   const loadProperties = async ({ field, query }) => {
     try {
-      const popup = document.querySelector(".popup");
-      const popupC = document.querySelector(".popup__content");
-      popup.addEventListener("click", (e) => {
-        if (!e.target.closest(".popup__content")) {
-          popup.classList.remove("popup--show");
-          spinController.stopAnimation(popupC);
-        }
-      });
-
       popup.classList.add("popup--show");
-      spinController.startAnimation(popupC);
+      popupContent.innerHTML = "";
+
+      const cont = document.createElement("div");
+      cont.classList.add("popup__element");
+
+      popupContent.appendChild(cont);
+      spinController.startAnimation(cont);
 
       // Prepare
       const myElm = await axios(`/api/v1/element/?${field}=${query}`);
       const [elementProp] = myElm.data.data.elements;
 
       if (!elementProp) {
+        const al = document.querySelector(".alert");
         document.querySelector(".alert")?.remove();
-        const htm = `
+        const htm = ` 
           <div class="alert alert--error">Sorry, no element found with that name</div>
         `;
         popup.classList.remove("popup--show");
         spinController.delInterval();
 
-        setTimeout(
+        container.insertAdjacentHTML("beforebegin", htm);
+
+        return setTimeout(
           () => document.querySelector(".alert").classList.add("alert--h"),
           3000
         );
-        return document
-          .querySelector(".container")
-          .insertAdjacentHTML("beforebegin", htm);
       }
-
-      menuHum.classList.remove("menu__back--cl");
-      menu.classList.remove("menu--sh");
 
       const html = generateHtml(elementProp);
 
       // Remove spinner and Render Element
       spinController.delInterval();
-      document.querySelector(".popup__content").innerHTML = html;
+      cont.innerHTML = html;
     } catch (err) {
       console.log(err);
     }
   };
 
-  const sI = document.querySelector(".menu__content-form-input");
-
-  const disElm = function (s) {
+  const disElm = function () {
     loadProperties({
       field: "name",
-      query: sI.value,
+      query: searchInp.value,
     });
   };
 
@@ -152,15 +181,11 @@ module.exports = () => {
     loadProperties({ field: "atomicNumber", query: atN });
   });
 
-  document
-    .querySelector(".menu__content-form-icon")
-    .addEventListener("click", disElm);
+  searchBtn.addEventListener("click", disElm);
+  searchInp.addEventListener("keypress", function (e) {
+    (e.which === 13 || e.keyCode === 13) && disElm();
+  });
   document.querySelector("form").addEventListener("submit", (e) => {
     e.preventDefault();
   });
-
-  sI.addEventListener(
-    "keypress",
-    (e) => (e.keyCode === 13 || e.which === 13) && disElm()
-  );
 };

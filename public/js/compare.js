@@ -2,6 +2,7 @@ import axios from "axios";
 import spinController from "./loader";
 
 const init = () => {
+  console.log("I am alive");
   const sBtn = document.querySelector(".btn--sort");
   const elmInput = document.querySelector(".form__input");
   const formElement = document.querySelector(".form__elements");

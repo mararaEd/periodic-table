@@ -27,16 +27,12 @@ html {
   @each $r in list.nth(calcRo($c, $h1, $h2), 1) {
     @keyframes glow--#{$i} {
       0% {
-        transform: translate(-50%, -100%) rotate($r) scaleY(0);
-      }
-
-      30% {
-        opacity: 0.4;
+        transform: translate(-50%, -100%) rotate($r);
+        height: 0;
       }
 
       100% {
-        transform: translate(-50%, -100%) rotate($r) scaleY(1);
-        opacity: 1;
+        transform: translate(-50%, -100%) rotate($r);
       }
     }
 
@@ -134,11 +130,6 @@ html {
 
 body {
   box-sizing: border-box;
-  background-image: linear-gradient(
-    to right bottom,
-    rgba(94, 94, 209, 0.7),
-    rgba(126, 11, 126, 0.7)
-  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -146,17 +137,7 @@ body {
 
 .per-container {
   display: grid;
-  grid-template-rows: 8rem 1fr;
+  grid-template-rows: min-content 8rem 1fr;
+  grid-auto-columns: 1fr;
   row-gap: 2rem;
-  justify-items: center;
-  align-items: center;
-  min-height: 100vh;
-
-  @media only screen and (max-width: $bp-5) {
-    grid-template-rows: 14rem 1fr;
-  }
-
-  @media only screen and (max-width: $bp-6) {
-    grid-template-rows: 18rem 1fr;
-  }
 }

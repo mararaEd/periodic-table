@@ -8335,6 +8335,16 @@ module.exports = require('./lib/axios');
 var intervalId = "";
 var elm = document.documentElement.style;
 
+var setProperty = function setProperty() {
+  for (var _len = arguments.length, values = new Array(_len), _key = 0; _key < _len; _key++) {
+    values[_key] = arguments[_key];
+  }
+
+  values.forEach(function (val, i) {
+    elm.setProperty("--anim".concat(i + 1), val);
+  });
+};
+
 exports.startAnimation = function (elmI) {
   var loader = "\n  <div class=\"loader\">\n    <div class=\"loader__ball\"></div>\n    <div class=\"loader__bar loader__bar--1\"></div>\n    <div class=\"loader__bar loader__bar--2\"></div>\n    <div class=\"loader__bar loader__bar--3\"></div>\n    <div class=\"loader__bar loader__bar--4\"></div>\n    <div class=\"loader__bar loader__bar--5\"></div>\n  </div>    \n  ";
   elmI.insertAdjacentHTML("beforeEnd", loader);
@@ -8351,19 +8361,16 @@ exports.startAnimation = function (elmI) {
     x: "moveXO ".concat(commonX),
     y: "moveYO ".concat(commonY)
   }];
-  elm.setProperty("--anim1", orderedA[0].x);
-  elm.setProperty("--anim2", orderedA[0].y);
+  setProperty(orderedA[0].x, orderedA[0].y);
   intervalId = setInterval(function () {
     if (i === 1) {
-      elm.setProperty("--anim1", orderedA[1].x);
-      elm.setProperty("--anim2", orderedA[1].y);
+      setProperty(orderedA[1].x, orderedA[1].y);
       orderedA.reverse();
       return i++;
     }
 
     if (i === 5) {
-      clipO.reverse();
-      clipO.forEach(function (el, i) {
+      clipO.reverse().forEach(function (el, i) {
         allLoaders[i].style.clipPath = "inset(".concat(el, "rem 0 0 0)");
       });
       elm.setProperty("--anim2", "moveD 0.35s linear forwards");
@@ -8371,21 +8378,14 @@ exports.startAnimation = function (elmI) {
       return i = 1;
     }
 
-    elm.setProperty("--anim1", "moveX".concat(i, " ").concat(commonX));
-    elm.setProperty("--anim2", "moveY".concat(i, " ").concat(commonY));
-
-    if (sec) {
-      elm.setProperty("--anim1", "moveXO".concat(i, " ").concat(commonX));
-      elm.setProperty("--anim2", "moveY".concat(i, " ").concat(commonY));
-    }
-
+    setProperty("moveX".concat(i, " ").concat(commonX), "moveY".concat(i, " ").concat(commonY));
+    if (sec) setProperty("moveXO".concat(i, " ").concat(commonX), "moveY".concat(i, " ").concat(commonY));
     i++;
   }, 305);
 };
 
-exports.stopAnimation = function (elmI) {
+exports.stopAnimation = function () {
   clearInterval(intervalId);
-  elmI.firstElementChild?.remove();
 };
 
 exports.delInterval = function () {
@@ -8417,6 +8417,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 var init = function init() {
+  console.log("I am alive");
   var sBtn = document.querySelector(".btn--sort");
   var elmInput = document.querySelector(".form__input");
   var formElement = document.querySelector(".form__elements");
@@ -8609,31 +8610,59 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 module.exports = function () {
+  // Elements
   var container = document.querySelector(".container");
   var btnKeyC = document.getElementById("key");
-  var menuHum = document.querySelector(".menu__back");
-  var menu = document.querySelector(".menu");
+  var popup = document.querySelector(".popup");
+  var popupContent = document.querySelector(".popup__content");
+  var searchBtn = document.querySelector(".fform__icon");
+  var searchInp = document.querySelector(".fform__input");
+  var curDef;
+  var curOption;
+
+  var rem = function rem(d, elm) {
+    curDef.classList.remove("fform__default--b");
+    curOption.classList.remove("fform__default-options--v");
+  };
+
   document.addEventListener("click", function (e) {
-    if (e.target.closest(".menu__back")) {
-      // control humburger
-      menuHum.classList.toggle("menu__back--cl"); // constrol menu
+    if (e.target.closest(".nav__item-c")) return e.target.closest(".nav__item-c").classList.toggle("nav__item--v");
+    if (document.querySelector(".nav__item--v")) document.querySelector(".nav__item--v").classList.remove("nav__item--v");
+  }); // Implementing options for units
 
-      menu.classList.toggle("menu--sh");
+  popup.addEventListener("click", function (e) {
+    if (!e.target.closest(".popup__content") || e.target.closest(".popup__close")) {
+      popup.classList.remove("popup--show");
+
+      _loader.default.stopAnimation(popupContent);
     }
 
-    if (menu.classList.contains("menu--sh") && !e.target.closest(".menu")) {
-      // control humburger
-      menuHum.classList.remove("menu__back--cl"); // constrol menu
-
-      menu.classList.remove("menu--sh");
+    if (e.target.matches(".fform__default-optionsOpt")) {
+      // get the text and change
+      var p = e.target.parentElement.parentElement;
+      p.firstElementChild.textContent = e.target.textContent;
+      return rem();
     }
+
+    if (e.target.closest(".fform__default")) {
+      if (curDef) rem();
+      curDef = e.target.closest(".fform__default");
+      curOption = curDef.lastElementChild;
+      Array.from(curOption.children).forEach(function (elm) {
+        return elm.textContent === curDef.firstElementChild.textContent ? elm.classList.add("fform__default-optionsOpt--c") : elm.classList.remove("fform__default-optionsOpt--c");
+      });
+      curDef.classList.add("fform__default--b");
+      return curOption.classList.add("fform__default-options--v");
+    }
+
+    if (!e.target.closest(".fform__default-options") && curOption) return rem();
   });
   btnKeyC.addEventListener("click", function (e) {
     return document.querySelector(".key").classList.toggle("key--sh");
   });
 
   var handleName = function handleName(name) {
-    var capitalI = _toConsumableArray(name).findIndex(function (el, i) {
+    var capitalI = _toConsumableArray(name).findIndex(function (el) {
       return el === el.toUpperCase();
     });
 
@@ -8662,7 +8691,7 @@ module.exports = function () {
     Object.values(prop).forEach(function (val, i) {
       if (!exclude.includes(keys[i])) filteredObj[keys[i]] = val;
     });
-    return "\n  <div class=\"popup__element\">\n  <h2 class=\"elem__sym\">".concat(prop.symbol, "</h2>\n  <p class=\"elem__group\">").concat(handleName(prop.groupBlock), "</p>\n  <p class=\"elem__name\">").concat(prop.name, "</p>\n  <p class=\"elem__den\">").concat(prop.density, " g/mol</p>\n\n  <div class=\"elem__overview\">\n     ").concat(generateDetails(filteredObj), "\n  </div>\n  \n  <div class=\"elem__row\">\n    <span class=\"elm__num\">").concat(prop.atomicNumber, "</span>\n    <span class=\"elm__num c\">").concat(prop.atomicNumber, "</span>\n    <span class=\"elm__num e\">").concat(Math.round(prop.atomicMass) - prop.atomicNumber, "</span>\n    <span class=\"elm__e\">electrons</span>\n    <span class=\"elm__p c\">protons</span>\n    <span class=\"elm__n e\">neutrons</span>\n  </div>\n</div>\n  ");
+    return "\n  <h2 class=\"elem__sym\">".concat(prop.symbol, "</h2>\n  <p class=\"elem__group\">").concat(handleName(prop.groupBlock), "</p>\n  <p class=\"elem__name\">").concat(prop.name, "</p>\n  <p class=\"elem__den\">").concat(prop.density, " g/mol</p>\n\n  <div class=\"elem__overview\">\n     ").concat(generateDetails(filteredObj), "\n  </div>\n  \n  <div class=\"elem__row\">\n    <span class=\"elm__num\">").concat(prop.atomicNumber, "</span>\n    <span class=\"elm__num c\">").concat(prop.atomicNumber, "</span>\n    <span class=\"elm__num e\">").concat(Math.round(prop.atomicMass) - prop.atomicNumber, "</span>\n    <span class=\"elm__e\">electrons</span>\n    <span class=\"elm__p c\">protons</span>\n    <span class=\"elm__n e\">neutrons</span>\n  </div>\n  ");
   };
 
   var loadProperties =
@@ -8671,7 +8700,7 @@ module.exports = function () {
     var _ref2 = _asyncToGenerator(
     /*#__PURE__*/
     regeneratorRuntime.mark(function _callee(_ref) {
-      var field, query, popup, popupC, myElm, _myElm$data$data$elem, elementProp, htm, html;
+      var field, query, cont, myElm, _myElm$data$data$elem, elementProp, al, htm, html;
 
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
@@ -8679,51 +8708,45 @@ module.exports = function () {
             case 0:
               field = _ref.field, query = _ref.query;
               _context.prev = 1;
-              popup = document.querySelector(".popup");
-              popupC = document.querySelector(".popup__content");
-              popup.addEventListener("click", function (e) {
-                if (!e.target.closest(".popup__content")) {
-                  popup.classList.remove("popup--show");
-
-                  _loader.default.stopAnimation(popupC);
-                }
-              });
               popup.classList.add("popup--show");
+              popupContent.innerHTML = "";
+              cont = document.createElement("div");
+              cont.classList.add("popup__element");
+              popupContent.appendChild(cont);
 
-              _loader.default.startAnimation(popupC); // Prepare
+              _loader.default.startAnimation(cont); // Prepare
 
 
-              _context.next = 9;
+              _context.next = 10;
               return (0, _axios.default)("/api/v1/element/?".concat(field, "=").concat(query));
 
-            case 9:
+            case 10:
               myElm = _context.sent;
               _myElm$data$data$elem = _slicedToArray(myElm.data.data.elements, 1), elementProp = _myElm$data$data$elem[0];
 
               if (elementProp) {
-                _context.next = 18;
+                _context.next = 20;
                 break;
               }
 
+              al = document.querySelector(".alert");
               document.querySelector(".alert")?.remove();
-              htm = "\n          <div class=\"alert alert--error\">Sorry, no element found with that name</div>\n        ";
+              htm = " \n          <div class=\"alert alert--error\">Sorry, no element found with that name</div>\n        ";
               popup.classList.remove("popup--show");
 
               _loader.default.delInterval();
 
-              setTimeout(function () {
+              container.insertAdjacentHTML("beforebegin", htm);
+              return _context.abrupt("return", setTimeout(function () {
                 return document.querySelector(".alert").classList.add("alert--h");
-              }, 3000);
-              return _context.abrupt("return", document.querySelector(".container").insertAdjacentHTML("beforebegin", htm));
+              }, 3000));
 
-            case 18:
-              menuHum.classList.remove("menu__back--cl");
-              menu.classList.remove("menu--sh");
+            case 20:
               html = generateHtml(elementProp); // Remove spinner and Render Element
 
               _loader.default.delInterval();
 
-              document.querySelector(".popup__content").innerHTML = html;
+              cont.innerHTML = html;
               _context.next = 28;
               break;
 
@@ -8745,12 +8768,10 @@ module.exports = function () {
     };
   }();
 
-  var sI = document.querySelector(".menu__content-form-input");
-
-  var disElm = function disElm(s) {
+  var disElm = function disElm() {
     loadProperties({
       field: "name",
-      query: sI.value
+      query: searchInp.value
     });
   };
 
@@ -8762,12 +8783,12 @@ module.exports = function () {
       query: atN
     });
   });
-  document.querySelector(".menu__content-form-icon").addEventListener("click", disElm);
+  searchBtn.addEventListener("click", disElm);
+  searchInp.addEventListener("keypress", function (e) {
+    (e.which === 13 || e.keyCode === 13) && disElm();
+  });
   document.querySelector("form").addEventListener("submit", function (e) {
     e.preventDefault();
-  });
-  sI.addEventListener("keypress", function (e) {
-    return (e.keyCode === 13 || e.which === 13) && disElm();
   });
 };
 },{"axios":"../../node_modules/axios/index.js","./loader":"loader.js"}],"index.js":[function(require,module,exports) {
@@ -9028,82 +9049,7 @@ var _periodic = _interopRequireDefault(require("./periodic"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 if (document.querySelector(".container")) (0, _periodic.default)();
-if (document.querySelector("form")) (0, _compare.default)(); // const container = document.querySelector(".container");
-// const handleName = (name) => {
-//   const capitalI = [...name].findIndex((el, i) => el === el.toUpperCase());
-//   return `${name.slice(0, capitalI)} ${name.slice(capitalI)}`;
-// };
-// const generateDetails = function (det) {
-//   let html = "";
-//   const keys = Object.keys(det);
-//   Object.values(det).forEach((val, i) => {
-//     const node = `
-//     <div class="elem__overview-row">
-//       <h3 class="elem__title">${handleName(keys[i])}</h3>
-//       <p class="elem__detail">${val}</p>
-//     </div>
-//     `;
-//     html = html.concat(node);
-//   });
-//   return html;
-// };
-// const generateHtml = function (prop) {
-//   const exclude = ["symbol", "groupBlock", "name", "density", "__v", "_id"];
-//   const filteredObj = {};
-//   const keys = Object.keys(prop);
-//   Object.values(prop).forEach((val, i) => {
-//     if (!exclude.includes(keys[i])) filteredObj[keys[i]] = val;
-//   });
-//   return `
-//   <div class="popup__element">
-//   <h2 class="elem__sym">${prop.symbol}</h2>
-//   <p class="elem__group">${handleName(prop.groupBlock)}</p>
-//   <p class="elem__name">${prop.name}</p>
-//   <p class="elem__den">${prop.density} g/mol</p>
-//   <div class="elem__overview">
-//      ${generateDetails(filteredObj)}
-//   </div>
-//   <div class="elem__row">
-//     <span class="elm__num">${prop.atomicNumber}</span>
-//     <span class="elm__num c">${prop.atomicNumber}</span>
-//     <span class="elm__num e">${Math.trunc(
-//       prop.atomicMass - prop.atomicNumber
-//     )}</span>
-//     <span class="elm__e">electrons</span>
-//     <span class="elm__p c">protons</span>
-//     <span class="elm__n e">neutrons</span>
-//   </div>
-// </div>
-//   `;
-// };
-// container.addEventListener("click", async (e) => {
-//   try {
-//     const atN = +e.target.closest(".elm")?.firstElementChild.textContent;
-//     if (!atN) return "error";
-//     const popup = document.querySelector(".popup");
-//     const popupC = document.querySelector(".popup__content");
-//     popup.addEventListener("click", (e) => {
-//       if (e.target.closest(".popup__close")) {
-//         popup.classList.remove("popup--show");
-//         spinController.stopAnimation();
-//       }
-//     });
-//     popup.classList.add("popup--show");
-//     spinController.startAnimation();
-//     // Prepare
-//     const myElm = await axios(`/api/v1/element/${atN}`);
-//     const [elementProp] = myElm.data.data.element;
-//     const html = generateHtml(elementProp);
-//     // Remove Spinner
-//     // Remove spinner and Render Element
-//     setTimeout(() => {
-//       spinController.delInterval();
-//       document.querySelector(".popup__content").innerHTML = html;
-//     }, 1500);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
+if (document.querySelector("form")) (0, _compare.default)();
 },{"core-js/modules/es6.array.copy-within":"../../node_modules/core-js/modules/es6.array.copy-within.js","core-js/modules/es6.array.fill":"../../node_modules/core-js/modules/es6.array.fill.js","core-js/modules/es6.array.find":"../../node_modules/core-js/modules/es6.array.find.js","core-js/modules/es6.array.find-index":"../../node_modules/core-js/modules/es6.array.find-index.js","core-js/modules/es6.array.from":"../../node_modules/core-js/modules/es6.array.from.js","core-js/modules/es7.array.includes":"../../node_modules/core-js/modules/es7.array.includes.js","core-js/modules/es6.array.iterator":"../../node_modules/core-js/modules/es6.array.iterator.js","core-js/modules/es6.array.of":"../../node_modules/core-js/modules/es6.array.of.js","core-js/modules/es6.array.species":"../../node_modules/core-js/modules/es6.array.species.js","core-js/modules/es6.date.to-primitive":"../../node_modules/core-js/modules/es6.date.to-primitive.js","core-js/modules/es6.function.has-instance":"../../node_modules/core-js/modules/es6.function.has-instance.js","core-js/modules/es6.function.name":"../../node_modules/core-js/modules/es6.function.name.js","core-js/modules/es6.map":"../../node_modules/core-js/modules/es6.map.js","core-js/modules/es6.math.acosh":"../../node_modules/core-js/modules/es6.math.acosh.js","core-js/modules/es6.math.asinh":"../../node_modules/core-js/modules/es6.math.asinh.js","core-js/modules/es6.math.atanh":"../../node_modules/core-js/modules/es6.math.atanh.js","core-js/modules/es6.math.cbrt":"../../node_modules/core-js/modules/es6.math.cbrt.js","core-js/modules/es6.math.clz32":"../../node_modules/core-js/modules/es6.math.clz32.js","core-js/modules/es6.math.cosh":"../../node_modules/core-js/modules/es6.math.cosh.js","core-js/modules/es6.math.expm1":"../../node_modules/core-js/modules/es6.math.expm1.js","core-js/modules/es6.math.fround":"../../node_modules/core-js/modules/es6.math.fround.js","core-js/modules/es6.math.hypot":"../../node_modules/core-js/modules/es6.math.hypot.js","core-js/modules/es6.math.imul":"../../node_modules/core-js/modules/es6.math.imul.js","core-js/modules/es6.math.log1p":"../../node_modules/core-js/modules/es6.math.log1p.js","core-js/modules/es6.math.log10":"../../node_modules/core-js/modules/es6.math.log10.js","core-js/modules/es6.math.log2":"../../node_modules/core-js/modules/es6.math.log2.js","core-js/modules/es6.math.sign":"../../node_modules/core-js/modules/es6.math.sign.js","core-js/modules/es6.math.sinh":"../../node_modules/core-js/modules/es6.math.sinh.js","core-js/modules/es6.math.tanh":"../../node_modules/core-js/modules/es6.math.tanh.js","core-js/modules/es6.math.trunc":"../../node_modules/core-js/modules/es6.math.trunc.js","core-js/modules/es6.number.constructor":"../../node_modules/core-js/modules/es6.number.constructor.js","core-js/modules/es6.number.epsilon":"../../node_modules/core-js/modules/es6.number.epsilon.js","core-js/modules/es6.number.is-finite":"../../node_modules/core-js/modules/es6.number.is-finite.js","core-js/modules/es6.number.is-integer":"../../node_modules/core-js/modules/es6.number.is-integer.js","core-js/modules/es6.number.is-nan":"../../node_modules/core-js/modules/es6.number.is-nan.js","core-js/modules/es6.number.is-safe-integer":"../../node_modules/core-js/modules/es6.number.is-safe-integer.js","core-js/modules/es6.number.max-safe-integer":"../../node_modules/core-js/modules/es6.number.max-safe-integer.js","core-js/modules/es6.number.min-safe-integer":"../../node_modules/core-js/modules/es6.number.min-safe-integer.js","core-js/modules/es6.number.parse-float":"../../node_modules/core-js/modules/es6.number.parse-float.js","core-js/modules/es6.number.parse-int":"../../node_modules/core-js/modules/es6.number.parse-int.js","core-js/modules/es6.object.assign":"../../node_modules/core-js/modules/es6.object.assign.js","core-js/modules/es7.object.define-getter":"../../node_modules/core-js/modules/es7.object.define-getter.js","core-js/modules/es7.object.define-setter":"../../node_modules/core-js/modules/es7.object.define-setter.js","core-js/modules/es7.object.entries":"../../node_modules/core-js/modules/es7.object.entries.js","core-js/modules/es6.object.freeze":"../../node_modules/core-js/modules/es6.object.freeze.js","core-js/modules/es6.object.get-own-property-descriptor":"../../node_modules/core-js/modules/es6.object.get-own-property-descriptor.js","core-js/modules/es7.object.get-own-property-descriptors":"../../node_modules/core-js/modules/es7.object.get-own-property-descriptors.js","core-js/modules/es6.object.get-own-property-names":"../../node_modules/core-js/modules/es6.object.get-own-property-names.js","core-js/modules/es6.object.get-prototype-of":"../../node_modules/core-js/modules/es6.object.get-prototype-of.js","core-js/modules/es7.object.lookup-getter":"../../node_modules/core-js/modules/es7.object.lookup-getter.js","core-js/modules/es7.object.lookup-setter":"../../node_modules/core-js/modules/es7.object.lookup-setter.js","core-js/modules/es6.object.prevent-extensions":"../../node_modules/core-js/modules/es6.object.prevent-extensions.js","core-js/modules/es6.object.is":"../../node_modules/core-js/modules/es6.object.is.js","core-js/modules/es6.object.is-frozen":"../../node_modules/core-js/modules/es6.object.is-frozen.js","core-js/modules/es6.object.is-sealed":"../../node_modules/core-js/modules/es6.object.is-sealed.js","core-js/modules/es6.object.is-extensible":"../../node_modules/core-js/modules/es6.object.is-extensible.js","core-js/modules/es6.object.keys":"../../node_modules/core-js/modules/es6.object.keys.js","core-js/modules/es6.object.seal":"../../node_modules/core-js/modules/es6.object.seal.js","core-js/modules/es7.object.values":"../../node_modules/core-js/modules/es7.object.values.js","core-js/modules/es6.promise":"../../node_modules/core-js/modules/es6.promise.js","core-js/modules/es7.promise.finally":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es6.reflect.apply":"../../node_modules/core-js/modules/es6.reflect.apply.js","core-js/modules/es6.reflect.construct":"../../node_modules/core-js/modules/es6.reflect.construct.js","core-js/modules/es6.reflect.define-property":"../../node_modules/core-js/modules/es6.reflect.define-property.js","core-js/modules/es6.reflect.delete-property":"../../node_modules/core-js/modules/es6.reflect.delete-property.js","core-js/modules/es6.reflect.get":"../../node_modules/core-js/modules/es6.reflect.get.js","core-js/modules/es6.reflect.get-own-property-descriptor":"../../node_modules/core-js/modules/es6.reflect.get-own-property-descriptor.js","core-js/modules/es6.reflect.get-prototype-of":"../../node_modules/core-js/modules/es6.reflect.get-prototype-of.js","core-js/modules/es6.reflect.has":"../../node_modules/core-js/modules/es6.reflect.has.js","core-js/modules/es6.reflect.is-extensible":"../../node_modules/core-js/modules/es6.reflect.is-extensible.js","core-js/modules/es6.reflect.own-keys":"../../node_modules/core-js/modules/es6.reflect.own-keys.js","core-js/modules/es6.reflect.prevent-extensions":"../../node_modules/core-js/modules/es6.reflect.prevent-extensions.js","core-js/modules/es6.reflect.set":"../../node_modules/core-js/modules/es6.reflect.set.js","core-js/modules/es6.reflect.set-prototype-of":"../../node_modules/core-js/modules/es6.reflect.set-prototype-of.js","core-js/modules/es6.regexp.constructor":"../../node_modules/core-js/modules/es6.regexp.constructor.js","core-js/modules/es6.regexp.flags":"../../node_modules/core-js/modules/es6.regexp.flags.js","core-js/modules/es6.regexp.match":"../../node_modules/core-js/modules/es6.regexp.match.js","core-js/modules/es6.regexp.replace":"../../node_modules/core-js/modules/es6.regexp.replace.js","core-js/modules/es6.regexp.split":"../../node_modules/core-js/modules/es6.regexp.split.js","core-js/modules/es6.regexp.search":"../../node_modules/core-js/modules/es6.regexp.search.js","core-js/modules/es6.regexp.to-string":"../../node_modules/core-js/modules/es6.regexp.to-string.js","core-js/modules/es6.set":"../../node_modules/core-js/modules/es6.set.js","core-js/modules/es6.symbol":"../../node_modules/core-js/modules/es6.symbol.js","core-js/modules/es7.symbol.async-iterator":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es6.string.anchor":"../../node_modules/core-js/modules/es6.string.anchor.js","core-js/modules/es6.string.big":"../../node_modules/core-js/modules/es6.string.big.js","core-js/modules/es6.string.blink":"../../node_modules/core-js/modules/es6.string.blink.js","core-js/modules/es6.string.bold":"../../node_modules/core-js/modules/es6.string.bold.js","core-js/modules/es6.string.code-point-at":"../../node_modules/core-js/modules/es6.string.code-point-at.js","core-js/modules/es6.string.ends-with":"../../node_modules/core-js/modules/es6.string.ends-with.js","core-js/modules/es6.string.fixed":"../../node_modules/core-js/modules/es6.string.fixed.js","core-js/modules/es6.string.fontcolor":"../../node_modules/core-js/modules/es6.string.fontcolor.js","core-js/modules/es6.string.fontsize":"../../node_modules/core-js/modules/es6.string.fontsize.js","core-js/modules/es6.string.from-code-point":"../../node_modules/core-js/modules/es6.string.from-code-point.js","core-js/modules/es6.string.includes":"../../node_modules/core-js/modules/es6.string.includes.js","core-js/modules/es6.string.italics":"../../node_modules/core-js/modules/es6.string.italics.js","core-js/modules/es6.string.iterator":"../../node_modules/core-js/modules/es6.string.iterator.js","core-js/modules/es6.string.link":"../../node_modules/core-js/modules/es6.string.link.js","core-js/modules/es7.string.pad-start":"../../node_modules/core-js/modules/es7.string.pad-start.js","core-js/modules/es7.string.pad-end":"../../node_modules/core-js/modules/es7.string.pad-end.js","core-js/modules/es6.string.raw":"../../node_modules/core-js/modules/es6.string.raw.js","core-js/modules/es6.string.repeat":"../../node_modules/core-js/modules/es6.string.repeat.js","core-js/modules/es6.string.small":"../../node_modules/core-js/modules/es6.string.small.js","core-js/modules/es6.string.starts-with":"../../node_modules/core-js/modules/es6.string.starts-with.js","core-js/modules/es6.string.strike":"../../node_modules/core-js/modules/es6.string.strike.js","core-js/modules/es6.string.sub":"../../node_modules/core-js/modules/es6.string.sub.js","core-js/modules/es6.string.sup":"../../node_modules/core-js/modules/es6.string.sup.js","core-js/modules/es6.typed.array-buffer":"../../node_modules/core-js/modules/es6.typed.array-buffer.js","core-js/modules/es6.typed.int8-array":"../../node_modules/core-js/modules/es6.typed.int8-array.js","core-js/modules/es6.typed.uint8-array":"../../node_modules/core-js/modules/es6.typed.uint8-array.js","core-js/modules/es6.typed.uint8-clamped-array":"../../node_modules/core-js/modules/es6.typed.uint8-clamped-array.js","core-js/modules/es6.typed.int16-array":"../../node_modules/core-js/modules/es6.typed.int16-array.js","core-js/modules/es6.typed.uint16-array":"../../node_modules/core-js/modules/es6.typed.uint16-array.js","core-js/modules/es6.typed.int32-array":"../../node_modules/core-js/modules/es6.typed.int32-array.js","core-js/modules/es6.typed.uint32-array":"../../node_modules/core-js/modules/es6.typed.uint32-array.js","core-js/modules/es6.typed.float32-array":"../../node_modules/core-js/modules/es6.typed.float32-array.js","core-js/modules/es6.typed.float64-array":"../../node_modules/core-js/modules/es6.typed.float64-array.js","core-js/modules/es6.weak-map":"../../node_modules/core-js/modules/es6.weak-map.js","core-js/modules/es6.weak-set":"../../node_modules/core-js/modules/es6.weak-set.js","core-js/modules/es7.array.flat-map":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/web.timers":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable":"../../node_modules/core-js/modules/web.dom.iterable.js","regenerator-runtime/runtime":"../../node_modules/regenerator-runtime/runtime.js","./compare":"compare.js","./periodic":"periodic.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -9132,7 +9078,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63812" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61009" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -1,7 +1,9 @@
 const Element = require("../models/elementModel.js");
 
 exports.view = async (req, res, next) => {
-  const data = await Element.find().select("atomicNumber symbol groupBlock");
+  const data = await Element.find()
+    .select("atomicNumber symbol groupBlock")
+    .sort("atomicNumber");
   let start = 0;
   let end = 2;
   const relations = { 1: 2, 2: 8, 3: 8, 4: 18, 5: 18, 6: 32, 7: 32 };
