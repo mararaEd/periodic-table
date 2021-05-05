@@ -8769,14 +8769,19 @@ module.exports = function () {
     var html = "";
     var keys = Object.keys(det);
     Object.values(det).forEach(function (val, i) {
+      var ordinals = {
+        0: "1<sup>st</sup>",
+        1: "2<sup>nd</sup>",
+        2: "3<sup>rd</sup>"
+      };
       var pref = units.slice(0, 2).find(function (u) {
         return u.stF.split(" ").join("") === keys[i].toLocaleLowerCase();
       });
-      val = Array.isArray(val) ? val.filter(function (_, i) {
-        return i <= 3;
-      }).map(function (el) {
-        return "<span>".concat(el, "</span>");
-      }).join("\n") : val;
+      if (Array.isArray(val)) return html = html.concat(val.filter(function (_, i) {
+        return i < 3;
+      }).map(function (v, i) {
+        return "\n          <div class=\"elem__overview-row\">\n          <h3 class=\"elem__title\">".concat(ordinals[i], " ionization energy</h3>\n          <p class=\"elem__detail\">").concat(v, "</p>\n        </div>\n          ");
+      }).join("\n"));
       var node = "\n    <div class=\"elem__overview-row\">\n      <h3 class=\"elem__title\">".concat(handleName(keys[i]), "</h3>\n      <p class=\"elem__detail\">").concat(pref ? pref.calc(val, pref.perference) + " " + handlePref(pref.perference) : val, "</p>\n    </div>\n    ");
       html = html.concat(node);
     });
@@ -9178,7 +9183,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52204" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59933" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

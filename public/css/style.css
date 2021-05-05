@@ -1859,10 +1859,7 @@ sup {
   width: 0.7rem;
   height: 0.7rem;
   background: transparent;
-  /* Default*/
   transform: translateY(0.8rem) translateX(-1px);
-  /* first */
-  /* transform: translateY(-0.8rem) translateX(3.1rem); */
   animation: var(--anim1);
 }
 

@@ -59,12 +59,32 @@ exports.compareElements = async (req, res, next) => {
     required.comparingCriteria.forEach((cri, i) => {
       const sortedEl = [...elements]
         .sort((a, b) => {
+          let nIn = false;
+
+          const orignalA = [a, b].map((prop, i) => {
+            const newObj = { ...prop._doc };
+            const conditions = {
+              Br: (newObj.exceeds = ["Se"]),
+              N: (newObj.exceeds = ["Cl"]),
+            };
+
+            if (cri === "electronNegetavity")
+              if (conditions[prop.symbol]) nIn = i + 1;
+            console.log(conditions[prop.symbol], i);
+            return newObj;
+          });
+
+          if (
+            nIn &&
+            orignalA[nIn - 1].exceeds.includes(
+              orignalA.find((_, i) => i !== nIn - 1).symbol
+            )
+          )
+            return nIn - 1 === 0 ? 1 : -1;
+
           const A = Math.abs(a[cri]);
           const B = Math.abs(b[cri]);
-
-          if (A < B) return -1;
-          if (A === B) return 0;
-          return 1;
+          return A - B;
         })
         .map((el, i) => el.symbol);
 

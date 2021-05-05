@@ -195,16 +195,32 @@ module.exports = () => {
     let html = "";
     const keys = Object.keys(det);
     Object.values(det).forEach((val, i) => {
+      const ordinals = {
+        0: "1<sup>st</sup>",
+        1: "2<sup>nd</sup>",
+        2: "3<sup>rd</sup>",
+      };
+
       const pref = units
         .slice(0, 2)
         .find((u) => u.stF.split(" ").join("") === keys[i].toLocaleLowerCase());
 
-      val = Array.isArray(val)
-        ? val
-            .filter((_, i) => i <= 3)
-            .map((el) => `<span>${el}</span>`)
+      if (Array.isArray(val))
+        return (html = html.concat(
+          val
+            .filter((_, i) => i < 3)
+            .map(
+              (v, i) =>
+                `
+          <div class="elem__overview-row">
+          <h3 class="elem__title">${ordinals[i]} ionization energy</h3>
+          <p class="elem__detail">${v}</p>
+        </div>
+          `
+            )
             .join("\n")
-        : val;
+        ));
+
       const node = `
     <div class="elem__overview-row">
       <h3 class="elem__title">${handleName(keys[i])}</h3>
