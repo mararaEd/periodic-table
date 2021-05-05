@@ -137,7 +137,7 @@ body {
 
 .per-container {
   display: grid;
-  grid-template-rows: min-content 8rem 1fr;
+  grid-template-rows: min-content 8rem min-content min-content;
   grid-auto-columns: 1fr;
   row-gap: 2rem;
 }

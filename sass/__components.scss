@@ -1,3 +1,6 @@
+sup {
+  margin: 0 0.1rem;
+}
 .container {
   display: grid;
   justify-items: center;
@@ -382,6 +385,7 @@
   &--sh {
     opacity: 1;
     visibility: visible;
+    box-shadow: 0 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.2);
   }
 
   transform: translateY(100%);
@@ -581,14 +585,23 @@
 
 // LOGO
 .logo-box {
+  @media only screen and (max-width: 737px) {
+    margin-right: auto;
+  }
+
   display: flex;
   align-items: center;
   font-size: 1.8rem;
   font-weight: 200;
   justify-content: space-evenly;
   flex: 0 0 24rem;
+
   @media only screen and (max-width: $bp-last) {
     flex: 0 0 16rem;
+  }
+
+  @media only screen and (max-width: 283px) {
+    flex: 0 0 14rem;
   }
 }
 
@@ -598,6 +611,10 @@ $color-secondary: #d41616;
   height: 7rem;
   @media only screen and (max-width: $bp-last) {
     height: 4rem;
+  }
+
+  @media only screen and (max-width: 283px) {
+    height: 3rem;
   }
 }
 
@@ -686,7 +703,9 @@ $color-secondary: #d41616;
   }
 
   &--form {
-    justify-self: end;
+    order: 1;
+    margin-top: 1rem;
+    margin-right: 2rem;
   }
 
   &--sa {
@@ -729,11 +748,16 @@ $color-secondary: #d41616;
 .fform {
   // TODO
   flex: 1;
-  margin-left: 2rem;
+  margin: 0 2rem;
 
-  @media only screen and (max-width: $bp-s) {
+  @media only screen and (max-width: 737px) {
     order: 1;
     flex: 0;
+    margin-left: 2rem;
+  }
+
+  @media only screen and (max-width: 283px) {
+    margin-left: 0.5rem;
   }
 
   &__group {
@@ -745,9 +769,10 @@ $color-secondary: #d41616;
   &__container {
     margin-top: 3rem;
     padding: 0 2rem;
-    display: grid;
-    justify-items: center;
-    row-gap: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
   }
 
   &__default {
@@ -756,6 +781,9 @@ $color-secondary: #d41616;
     padding: 0.5rem 1rem;
     font-size: 1.4rem;
     width: 24rem;
+    @media only screen and (max-width: calc(418em / 16)) {
+      width: 14rem;
+    }
     transition: all 0.1s;
     display: flex;
     justify-content: space-between;
@@ -851,13 +879,16 @@ $color-secondary: #d41616;
 
     &:focus {
       width: 26rem;
-
-      @media only screen and (max-width: $bp-last) {
-        width: 16rem;
-      }
-
       outline: none;
       border: 1px solid #ff50509f;
+
+      @media only screen and (max-width: 739px) {
+        width: initial;
+      }
+
+      @media only screen and (max-width: $bp-last) {
+        width: 15rem;
+      }
     }
 
     &::placeholder {
@@ -874,7 +905,6 @@ $color-secondary: #d41616;
     margin-left: -2.5rem;
     opacity: 0.4;
     cursor: pointer;
-    z-index: 99999999999999999999999999;
     margin-right: auto;
   }
 }
@@ -889,25 +919,28 @@ $color-secondary: #d41616;
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
-  align-content: space-around;
 
-  @media only screen and (max-width: $bp-s) {
-    padding-bottom: 2rem;
+  @media only screen and (max-width: 739px) {
+    padding-bottom: 1rem;
   }
 
   @media only screen and (max-width: $bp-last) {
-    justify-content: center;
+    align-content: space-around;
     padding: 0.5rem 0.1rem;
-    padding-bottom: 2rem;
+    height: 22vh;
   }
 
   &__item {
     margin-left: 2rem;
 
+    @media only screen and (max-width: $bp-last) {
+      margin-left: 1rem;
+    }
+
     &-c {
-      @media only screen and (max-width: $bp-s) {
-        margin-left: auto;
-      }
+      // @media only screen and (max-width: $bp-s) {
+      //   margin-left: auto;
+      // }
 
       &:hover {
         border-radius: 0;

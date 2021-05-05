@@ -8609,10 +8609,68 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Unit =
+/*#__PURE__*/
+function () {
+  function Unit(units, perference, def, stF) {
+    _classCallCheck(this, Unit);
+
+    this.units = units;
+    this.perference = perference;
+    this.def = def;
+    this.stF = stF;
+  }
+
+  _createClass(Unit, [{
+    key: "calc",
+    value: function calc(v, u) {
+      var _conditions;
+
+      var conditions = (_conditions = {}, _defineProperty(_conditions, this.perference === this.def, v), _defineProperty(_conditions, "o C", v - 273.15), _defineProperty(_conditions, "o F", (v - 273.15) * (9 / 5) + 32), _defineProperty(_conditions, "kg/m 3", v * 1000), _conditions);
+      return (conditions[true] || conditions[u]).toFixed(2);
+    }
+  }]);
+
+  return Unit;
+}();
+
+var pref = localStorage.getItem("unitsP")?.split(",") || ["k", "k", "g/cm 3"];
+var units = [new Unit(["k", "o F", "o C"], pref[0], "k", "boiling point"), new Unit(["k", "o F", "o C"], pref[1], "k", "melting point"), new Unit(["g/cm 3", "kg/m 3"], pref[2], "g/cm 3", "density")];
+
+var handlePref = function handlePref(pre) {
+  var rev;
+  var st = pre.split(" ");
+  if (st.length < 2) return pre;
+
+  if (pre.includes("/")) {
+    st = st.reverse();
+    rev = true;
+  }
+
+  var str = st.map(function (s, i) {
+    if (i === 0) return "<sup>".concat(s, "</sup>");
+    return s;
+  });
+  if (rev) str.reverse();
+  return str.join("");
+};
+
+var reversePref = function reversePref(txt) {
+  return txt.length < 2 ? txt : txt.slice(0, txt.length - 1) + " " + txt.slice(-1);
+};
+
 module.exports = function () {
   // Elements
   var container = document.querySelector(".container");
-  var btnKeyC = document.getElementById("key");
+  var key = document.querySelector(".key");
   var popup = document.querySelector(".popup");
   var popupContent = document.querySelector(".popup__content");
   var searchBtn = document.querySelector(".fform__icon");
@@ -8620,13 +8678,37 @@ module.exports = function () {
   var curDef;
   var curOption;
 
+  var remCustom = function remCustom() {
+    if (popupContent.lastElementChild.classList.contains("fform__container")) Array.from(popupContent.children).forEach(function (el, i) {
+      return i !== 0 && el.remove();
+    });
+    popupContent.classList.remove("popup__content--c");
+  };
+
   var rem = function rem(d, elm) {
     curDef.classList.remove("fform__default--b");
     curOption.classList.remove("fform__default-options--v");
   };
 
   document.addEventListener("click", function (e) {
+    if (e.target.matches("#custom")) {
+      // prepare html
+      var subCollection = [];
+      units.forEach(function (u, i) {
+        return subCollection.push("\n          <div class=\"fform__group\">\n            <div class=\"fform__label\">".concat(u.stF, "</div>\n            <div class=\"fform__default\">\n              <p class=\"fform__default-text\">").concat(handlePref(u.perference), "</p>\n              <svg class=\"fform__default-icon\">\n                 <use xlink:href='/img/sprites.svg#icon-chevron-down'></use>\n              </svg>\n            <div class=\"fform__default-options\">\n             ").concat(u.units.map(function (u) {
+          return "<div class=\"fform__default-optionsOpt\">".concat(handlePref(u), "</div>");
+        }).join("\n"), "                \n            </div>\n\n            </div>\n          </div>\n        "));
+      });
+      var html = "\n      <h2 class=\"h2 h2--black\">customize your units</h2>\n       <div class=\"fform__container\">\n         <div class=\"fform\">\n            ".concat(subCollection.join("\n"), "\n            \n            </div>\n            <a class=\"btn btn--sa btn--form\">Done</a>               \n       </div>         \n      "); // inseting html
+
+      remCustom();
+      popupContent.classList.add("popup__content--c");
+      popupContent.insertAdjacentHTML("beforeend", html);
+      popup.classList.add("popup--show");
+    }
+
     if (e.target.closest(".nav__item-c")) return e.target.closest(".nav__item-c").classList.toggle("nav__item--v");
+    if (e.target.closest("#key")) return key.classList.toggle("key--sh");
     if (document.querySelector(".nav__item--v")) document.querySelector(".nav__item--v").classList.remove("nav__item--v");
   }); // Implementing options for units
 
@@ -8635,12 +8717,27 @@ module.exports = function () {
       popup.classList.remove("popup--show");
 
       _loader.default.stopAnimation(popupContent);
+
+      document.querySelector(".popup__element")?.remove();
+    }
+
+    if (e.target.matches(".btn--form")) {
+      // get values
+      var prefs = _toConsumableArray(document.querySelectorAll(".fform__default-text")).map(function (el) {
+        return reversePref(el.textContent);
+      });
+
+      prefs.forEach(function (el, i) {
+        return units[i].perference = el;
+      });
+      localStorage.setItem("unitsP", prefs);
+      popup.classList.remove("popup--show");
     }
 
     if (e.target.matches(".fform__default-optionsOpt")) {
       // get the text and change
       var p = e.target.parentElement.parentElement;
-      p.firstElementChild.textContent = e.target.textContent;
+      p.firstElementChild.innerHTML = e.target.innerHTML;
       return rem();
     }
 
@@ -8657,9 +8754,6 @@ module.exports = function () {
 
     if (!e.target.closest(".fform__default-options") && curOption) return rem();
   });
-  btnKeyC.addEventListener("click", function (e) {
-    return document.querySelector(".key").classList.toggle("key--sh");
-  });
 
   var handleName = function handleName(name) {
     var capitalI = _toConsumableArray(name).findIndex(function (el) {
@@ -8667,31 +8761,37 @@ module.exports = function () {
     });
 
     return capitalI === -1 ? name : "".concat(name.slice(0, capitalI), " ").concat(name.slice(capitalI));
-  };
+  }; // o F
+  // kg/m 3
+
 
   var generateDetails = function generateDetails(det) {
     var html = "";
     var keys = Object.keys(det);
     Object.values(det).forEach(function (val, i) {
+      var pref = units.slice(0, 2).find(function (u) {
+        return u.stF.split(" ").join("") === keys[i].toLocaleLowerCase();
+      });
       val = Array.isArray(val) ? val.filter(function (_, i) {
-        return i <= 10;
+        return i <= 3;
       }).map(function (el) {
         return "<span>".concat(el, "</span>");
       }).join("\n") : val;
-      var node = "\n    <div class=\"elem__overview-row\">\n      <h3 class=\"elem__title\">".concat(handleName(keys[i]), "</h3>\n      <p class=\"elem__detail\">").concat(val, "</p>\n    </div>\n    ");
+      var node = "\n    <div class=\"elem__overview-row\">\n      <h3 class=\"elem__title\">".concat(handleName(keys[i]), "</h3>\n      <p class=\"elem__detail\">").concat(pref ? pref.calc(val, pref.perference) + " " + handlePref(pref.perference) : val, "</p>\n    </div>\n    ");
       html = html.concat(node);
     });
     return html;
   };
 
   var generateHtml = function generateHtml(prop) {
+    var d = units[2];
     var exclude = ["symbol", "groupBlock", "name", "density", "__v", "_id"];
     var filteredObj = {};
     var keys = Object.keys(prop);
     Object.values(prop).forEach(function (val, i) {
       if (!exclude.includes(keys[i])) filteredObj[keys[i]] = val;
     });
-    return "\n  <h2 class=\"elem__sym\">".concat(prop.symbol, "</h2>\n  <p class=\"elem__group\">").concat(handleName(prop.groupBlock), "</p>\n  <p class=\"elem__name\">").concat(prop.name, "</p>\n  <p class=\"elem__den\">").concat(prop.density, " g/mol</p>\n\n  <div class=\"elem__overview\">\n     ").concat(generateDetails(filteredObj), "\n  </div>\n  \n  <div class=\"elem__row\">\n    <span class=\"elm__num\">").concat(prop.atomicNumber, "</span>\n    <span class=\"elm__num c\">").concat(prop.atomicNumber, "</span>\n    <span class=\"elm__num e\">").concat(Math.round(prop.atomicMass) - prop.atomicNumber, "</span>\n    <span class=\"elm__e\">electrons</span>\n    <span class=\"elm__p c\">protons</span>\n    <span class=\"elm__n e\">neutrons</span>\n  </div>\n  ");
+    return "\n  <h2 class=\"elem__sym\">".concat(prop.symbol, "</h2>\n  <p class=\"elem__group\">").concat(handleName(prop.groupBlock), "</p>\n  <p class=\"elem__name\">").concat(prop.name, "</p>\n  <p class=\"elem__den\">").concat(d.calc(prop.density, d.perference), " ").concat(handlePref(d.perference), "</p>\n\n  <div class=\"elem__overview\">\n     ").concat(generateDetails(filteredObj), "\n  </div>\n  \n  <div class=\"elem__row\">\n    <span class=\"elm__num\">").concat(prop.atomicNumber, "</span>\n    <span class=\"elm__num c\">").concat(prop.atomicNumber, "</span>\n    <span class=\"elm__num e\">").concat(Math.round(prop.atomicMass) - prop.atomicNumber, "</span>\n    <span class=\"elm__e\">electrons</span>\n    <span class=\"elm__p c\">protons</span>\n    <span class=\"elm__n e\">neutrons</span>\n  </div>\n  ");
   };
 
   var loadProperties =
@@ -8708,7 +8808,7 @@ module.exports = function () {
             case 0:
               field = _ref.field, query = _ref.query;
               _context.prev = 1;
-              document.querySelector(".popup__element")?.remove();
+              remCustom();
               popup.classList.add("popup--show");
               cont = document.createElement("div");
               cont.classList.add("popup__element");
@@ -9078,7 +9178,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61009" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52204" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

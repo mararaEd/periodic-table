@@ -416,9 +416,13 @@ body {
 
 .per-container {
   display: grid;
-  grid-template-rows: min-content 8rem 1fr;
+  grid-template-rows: min-content 8rem min-content min-content;
   grid-auto-columns: 1fr;
   row-gap: 2rem;
+}
+
+sup {
+  margin: 0 0.1rem;
 }
 
 .container {
@@ -867,6 +871,7 @@ body {
 .key--sh {
   opacity: 1;
   visibility: visible;
+  box-shadow: 0 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.2);
 }
 @media only screen and (max-width: 37em) {
   .key {
@@ -1346,9 +1351,19 @@ body {
   justify-content: space-evenly;
   flex: 0 0 24rem;
 }
+@media only screen and (max-width: 737px) {
+  .logo-box {
+    margin-right: auto;
+  }
+}
 @media only screen and (max-width: 23.875em) {
   .logo-box {
     flex: 0 0 16rem;
+  }
+}
+@media only screen and (max-width: 283px) {
+  .logo-box {
+    flex: 0 0 14rem;
   }
 }
 
@@ -1358,6 +1373,11 @@ body {
 @media only screen and (max-width: 23.875em) {
   .logo {
     height: 4rem;
+  }
+}
+@media only screen and (max-width: 283px) {
+  .logo {
+    height: 3rem;
   }
 }
 
@@ -1432,7 +1452,9 @@ body {
   background-color: #d41616;
 }
 .btn--form {
-  justify-self: end;
+  order: 1;
+  margin-top: 1rem;
+  margin-right: 2rem;
 }
 .btn--sa {
   transition: all 0.2s;
@@ -1466,12 +1488,18 @@ body {
 
 .fform {
   flex: 1;
-  margin-left: 2rem;
+  margin: 0 2rem;
 }
-@media only screen and (max-width: 46.25em) {
+@media only screen and (max-width: 737px) {
   .fform {
     order: 1;
     flex: 0;
+    margin-left: 2rem;
+  }
+}
+@media only screen and (max-width: 283px) {
+  .fform {
+    margin-left: 0.5rem;
   }
 }
 .fform__group:not(:first-child) {
@@ -1480,9 +1508,10 @@ body {
 .fform__container {
   margin-top: 3rem;
   padding: 0 2rem;
-  display: grid;
-  justify-items: center;
-  row-gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
 }
 .fform__default {
   position: relative;
@@ -1493,6 +1522,11 @@ body {
   transition: all 0.1s;
   display: flex;
   justify-content: space-between;
+}
+@media only screen and (max-width: calc(418em / 16)) {
+  .fform__default {
+    width: 14rem;
+  }
 }
 .fform__default-icon {
   fill: #0000009a;
@@ -1572,9 +1606,14 @@ body {
   outline: none;
   border: 1px solid #ff50509f;
 }
+@media only screen and (max-width: 739px) {
+  .fform__input:focus {
+    width: initial;
+  }
+}
 @media only screen and (max-width: 23.875em) {
   .fform__input:focus {
-    width: 16rem;
+    width: 15rem;
   }
 }
 .fform__input::placeholder {
@@ -1589,7 +1628,6 @@ body {
   margin-left: -2.5rem;
   opacity: 0.4;
   cursor: pointer;
-  z-index: 100000000000000020000000000;
   margin-right: auto;
 }
 
@@ -1601,26 +1639,25 @@ body {
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
-  align-content: space-around;
 }
-@media only screen and (max-width: 46.25em) {
+@media only screen and (max-width: 739px) {
   .nav {
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
   }
 }
 @media only screen and (max-width: 23.875em) {
   .nav {
-    justify-content: center;
+    align-content: space-around;
     padding: 0.5rem 0.1rem;
-    padding-bottom: 2rem;
+    height: 22vh;
   }
 }
 .nav__item {
   margin-left: 2rem;
 }
-@media only screen and (max-width: 46.25em) {
-  .nav__item-c {
-    margin-left: auto;
+@media only screen and (max-width: 23.875em) {
+  .nav__item {
+    margin-left: 1rem;
   }
 }
 .nav__item-c:hover {

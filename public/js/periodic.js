@@ -1,10 +1,59 @@
 import axios from "axios";
 import spinController from "./loader";
 
+class Unit {
+  constructor(units, perference, def, stF) {
+    this.units = units;
+    this.perference = perference;
+    this.def = def;
+    this.stF = stF;
+  }
+
+  calc(v, u) {
+    const conditions = {
+      [this.perference === this.def]: v,
+      "o C": v - 273.15,
+      "o F": (v - 273.15) * (9 / 5) + 32,
+      "kg/m 3": v * 1000,
+    };
+    return (conditions[true] || conditions[u]).toFixed(2);
+  }
+}
+const pref = localStorage.getItem("unitsP")?.split(",") || ["k", "k", "g/cm 3"];
+
+const units = [
+  new Unit(["k", "o F", "o C"], pref[0], "k", "boiling point"),
+  new Unit(["k", "o F", "o C"], pref[1], "k", "melting point"),
+  new Unit(["g/cm 3", "kg/m 3"], pref[2], "g/cm 3", "density"),
+];
+
+const handlePref = function (pre) {
+  let rev;
+  let st = pre.split(" ");
+
+  if (st.length < 2) return pre;
+
+  if (pre.includes("/")) {
+    st = st.reverse();
+    rev = true;
+  }
+
+  const str = st.map((s, i) => {
+    if (i === 0) return `<sup>${s}</sup>`;
+    return s;
+  });
+
+  if (rev) str.reverse();
+  return str.join("");
+};
+
+const reversePref = (txt) =>
+  txt.length < 2 ? txt : txt.slice(0, txt.length - 1) + " " + txt.slice(-1);
+
 module.exports = () => {
   // Elements
   const container = document.querySelector(".container");
-  const btnKeyC = document.getElementById("key");
+  const key = document.querySelector(".key");
   const popup = document.querySelector(".popup");
   const popupContent = document.querySelector(".popup__content");
   const searchBtn = document.querySelector(".fform__icon");
@@ -13,18 +62,75 @@ module.exports = () => {
   let curDef;
   let curOption;
 
+  const remCustom = function () {
+    if (popupContent.lastElementChild.classList.contains("fform__container"))
+      Array.from(popupContent.children).forEach(
+        (el, i) => i !== 0 && el.remove()
+      );
+    popupContent.classList.remove("popup__content--c");
+  };
+
   const rem = (d, elm) => {
     curDef.classList.remove("fform__default--b");
     curOption.classList.remove("fform__default-options--v");
   };
 
   document.addEventListener("click", (e) => {
+    if (e.target.matches("#custom")) {
+      // prepare html
+      const subCollection = [];
+      units.forEach((u, i) =>
+        subCollection.push(`
+          <div class="fform__group">
+            <div class="fform__label">${u.stF}</div>
+            <div class="fform__default">
+              <p class="fform__default-text">${handlePref(u.perference)}</p>
+              <svg class="fform__default-icon">
+                 <use xlink:href='/img/sprites.svg#icon-chevron-down'></use>
+              </svg>
+            <div class="fform__default-options">
+             ${u.units
+               .map(
+                 (u) =>
+                   `<div class="fform__default-optionsOpt">${handlePref(
+                     u
+                   )}</div>`
+               )
+               .join("\n")}                
+            </div>
+
+            </div>
+          </div>
+        `)
+      );
+
+      const html = `
+      <h2 class="h2 h2--black">customize your units</h2>
+       <div class="fform__container">
+         <div class="fform">
+            ${subCollection.join("\n")}
+            
+            </div>
+            <a class="btn btn--sa btn--form">Done</a>               
+       </div>         
+      `;
+
+      // inseting html
+      remCustom();
+      popupContent.classList.add("popup__content--c");
+      popupContent.insertAdjacentHTML("beforeend", html);
+      popup.classList.add("popup--show");
+    }
+
     if (e.target.closest(".nav__item-c"))
       return e.target.closest(".nav__item-c").classList.toggle("nav__item--v");
+
+    if (e.target.closest("#key")) return key.classList.toggle("key--sh");
 
     if (document.querySelector(".nav__item--v"))
       document.querySelector(".nav__item--v").classList.remove("nav__item--v");
   });
+
   // Implementing options for units
   popup.addEventListener("click", (e) => {
     if (
@@ -33,13 +139,26 @@ module.exports = () => {
     ) {
       popup.classList.remove("popup--show");
       spinController.stopAnimation(popupContent);
+
+      document.querySelector(".popup__element")?.remove();
+    }
+
+    if (e.target.matches(".btn--form")) {
+      // get values
+      const prefs = [
+        ...document.querySelectorAll(".fform__default-text"),
+      ].map((el) => reversePref(el.textContent));
+
+      prefs.forEach((el, i) => (units[i].perference = el));
+      localStorage.setItem("unitsP", prefs);
+      popup.classList.remove("popup--show");
     }
 
     if (e.target.matches(".fform__default-optionsOpt")) {
       // get the text and change
       const p = e.target.parentElement.parentElement;
 
-      p.firstElementChild.textContent = e.target.textContent;
+      p.firstElementChild.innerHTML = e.target.innerHTML;
       return rem();
     }
 
@@ -62,10 +181,6 @@ module.exports = () => {
     if (!e.target.closest(".fform__default-options") && curOption) return rem();
   });
 
-  btnKeyC.addEventListener("click", (e) =>
-    document.querySelector(".key").classList.toggle("key--sh")
-  );
-
   const handleName = (name) => {
     const capitalI = [...name].findIndex((el) => el === el.toUpperCase());
     return capitalI === -1
@@ -73,20 +188,31 @@ module.exports = () => {
       : `${name.slice(0, capitalI)} ${name.slice(capitalI)}`;
   };
 
+  // o F
+  // kg/m 3
+
   const generateDetails = function (det) {
     let html = "";
     const keys = Object.keys(det);
     Object.values(det).forEach((val, i) => {
+      const pref = units
+        .slice(0, 2)
+        .find((u) => u.stF.split(" ").join("") === keys[i].toLocaleLowerCase());
+
       val = Array.isArray(val)
         ? val
-            .filter((_, i) => i <= 10)
+            .filter((_, i) => i <= 3)
             .map((el) => `<span>${el}</span>`)
             .join("\n")
         : val;
       const node = `
     <div class="elem__overview-row">
       <h3 class="elem__title">${handleName(keys[i])}</h3>
-      <p class="elem__detail">${val}</p>
+      <p class="elem__detail">${
+        pref
+          ? pref.calc(val, pref.perference) + " " + handlePref(pref.perference)
+          : val
+      }</p>
     </div>
     `;
       html = html.concat(node);
@@ -96,6 +222,7 @@ module.exports = () => {
   };
 
   const generateHtml = function (prop) {
+    const d = units[2];
     const exclude = ["symbol", "groupBlock", "name", "density", "__v", "_id"];
     const filteredObj = {};
     const keys = Object.keys(prop);
@@ -107,7 +234,9 @@ module.exports = () => {
   <h2 class="elem__sym">${prop.symbol}</h2>
   <p class="elem__group">${handleName(prop.groupBlock)}</p>
   <p class="elem__name">${prop.name}</p>
-  <p class="elem__den">${prop.density} g/mol</p>
+  <p class="elem__den">${d.calc(prop.density, d.perference)} ${handlePref(
+      d.perference
+    )}</p>
 
   <div class="elem__overview">
      ${generateDetails(filteredObj)}
@@ -128,7 +257,7 @@ module.exports = () => {
 
   const loadProperties = async ({ field, query }) => {
     try {
-      document.querySelector(".popup__element")?.remove();
+      remCustom();
       popup.classList.add("popup--show");
 
       const cont = document.createElement("div");
