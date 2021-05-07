@@ -19,7 +19,8 @@ class Unit {
     return (conditions[true] || conditions[u]).toFixed(2);
   }
 }
-const pref = localStorage.getItem("unitsP")?.split(",") || ["k", "k", "g/cm 3"];
+
+const pref = (localStorage.getItem("unitsP") || "k, k, g/cm 3").split(",");
 
 const units = [
   new Unit(["k", "o F", "o C"], pref[0], "k", "boiling point"),
@@ -140,7 +141,8 @@ module.exports = () => {
       popup.classList.remove("popup--show");
       spinController.stopAnimation(popupContent);
 
-      document.querySelector(".popup__element")?.remove();
+      const pE = document.querySelector(".popup__element");
+      pE && pE.remove();
     }
 
     if (e.target.matches(".btn--form")) {
@@ -225,7 +227,7 @@ module.exports = () => {
     <div class="elem__overview-row">
       <h3 class="elem__title">${handleName(keys[i])}</h3>
       <p class="elem__detail">${
-        pref
+        pref && val
           ? pref.calc(val, pref.perference) + " " + handlePref(pref.perference)
           : val
       }</p>
@@ -250,9 +252,9 @@ module.exports = () => {
   <h2 class="elem__sym">${prop.symbol}</h2>
   <p class="elem__group">${handleName(prop.groupBlock)}</p>
   <p class="elem__name">${prop.name}</p>
-  <p class="elem__den">${d.calc(prop.density, d.perference)} ${handlePref(
-      d.perference
-    )}</p>
+  <p class="elem__den">${
+    prop.density ? d.calc(prop.density, d.perference) : prop.density
+  } ${handlePref(d.perference)}</p>
 
   <div class="elem__overview">
      ${generateDetails(filteredObj)}
@@ -288,7 +290,7 @@ module.exports = () => {
 
       if (!elementProp) {
         const al = document.querySelector(".alert");
-        document.querySelector(".alert")?.remove();
+        al && al.remove();
         const htm = ` 
           <div class="alert alert--error">Sorry, no element found with that name</div>
         `;
@@ -321,9 +323,12 @@ module.exports = () => {
   };
 
   container.addEventListener("click", function (e) {
-    const atN = +e.target.closest(".elm")?.firstElementChild.textContent;
+    const atN = e.target.closest(".elm");
     if (!atN) return "error";
-    loadProperties({ field: "atomicNumber", query: atN });
+    loadProperties({
+      field: "atomicNumber",
+      query: +atN.firstElementChild.textContent,
+    });
   });
 
   searchBtn.addEventListener("click", disElm);

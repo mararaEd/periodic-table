@@ -7,10 +7,10 @@
     "start": "node server.js",
     "st": "nodemon server.js",
     "live": "live-server",
-    "compile:sass": "sass sass/main.scss public/css/style.css --watch",
-    "prefix:css": "npx postcss css/style.comp.css --use autoprefixer -d css",
-    "compress:css": "cleancss -o css/style.css css/style.comp.css",
-    "build:css": "npm-run-all compile:sass prefix:css compress:css delete:css",
+    "start:sass": "sass sass/main.scss public/css/style.css --watch",
+    "compile:sass": "sass sass/main.scss public/css/style.css",
+    "compress:css": "cleancss -o public/css/style-min.css public/css/style.css",
+    "build:css": "npm-run-all compile:sass compress:css",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
     "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
@@ -26,9 +26,13 @@
     "pug": "^3.0.2"
   },
   "devDependencies": {
+    "clean-css": "^5.1.2",
+    "concat": "^1.0.3",
     "core-js": "^2.6.11",
     "nodemon": "^2.0.7",
-    "parcel-bundler": "^1.12.3"
+    "parcel-bundler": "^1.12.3",
+    "postcss": "^8.2.14",
+    "postcss-cli": "^8.3.1"
   },
   "engines": {
     "node": ">=10.0.0"

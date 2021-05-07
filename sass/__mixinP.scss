@@ -14,62 +14,6 @@
   @return $rot $heights;
 }
 
-@function calcSh($width) {
-  $counter: $width * 0.9965995;
-  $counter-2: $width * 0.2092597;
-  $counter-3: -$width * 0.21449123;
-  $counter-4: $width * 0.156944;
-  $counter-5: -$counter-4;
-
-  $shadow: $counter 0 $lineColor;
-  $shadow-mod: $counter 0 $lineColor;
-  $shadow-m: $counter 0 $lineColor;
-  $shadow-1: $counter-2 0 $lineColor;
-  $shadow-3: $counter-3 0 $lineColor;
-  $shadow-4: $counter-4 0 $lineColor;
-  $shadow-5: $counter-5 0 $lineColor;
-  $shadow-6: $counter-5 0 rgba($lineColor, 0.07);
-  $shadow-7: $counter-5 0 $lineColor;
-
-  @for $i from 1 through 7 {
-    $shadow: $shadow, $counter * $i 0 $lineColor;
-  }
-
-  @for $i from 1 through 17 {
-    $shadow-mod: $shadow-mod, $counter * $i 0 $lineColor;
-  }
-
-  @for $i from 1 through 31 {
-    $shadow-m: $shadow-m, $counter * $i 0 $lineColor;
-  }
-
-  @for $i from 1 through 5 {
-    $shadow-3: $shadow-3, $counter-3 * $i 0 $lineColor;
-  }
-
-  @for $i from 1 through 2 {
-    $shadow-4: $shadow-4, $counter-4 * $i 0 $lineColor;
-  }
-
-  @for $i from 1 through 6 {
-    $shadow-5: $shadow-5, $counter-5 * $i 0 $lineColor;
-  }
-
-  @for $i from 1 through 6 {
-    $shadow-6: $shadow-6, $counter-5 * $i 0 rgba($lineColor, 0.07);
-  }
-
-  @return (
-    "shadow": $shadow,
-    "shadow-mod": $shadow-mod,
-    "shadow-m": $shadow-m,
-    "shadow-3": $shadow-3,
-    "shadow-4": $shadow-4,
-    "shadow-5": $shadow-5,
-    "shadow-6": $shadow-6
-  );
-}
-
 // first
 // height / width * 3;
 

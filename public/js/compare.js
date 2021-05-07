@@ -2,7 +2,6 @@ import axios from "axios";
 import spinController from "./loader";
 
 const init = () => {
-  console.log("I am alive");
   const sBtn = document.querySelector(".btn--sort");
   const elmInput = document.querySelector(".form__input");
   const formElement = document.querySelector(".form__elements");
@@ -48,11 +47,8 @@ const init = () => {
           .toLowerCase()
           .includes(value.toLowerCase())
     );
-
     allElements.forEach((el) => el.classList.remove("form__elements-elm--h"));
     filteredElm.forEach((el) => el.classList.add("form__elements-elm--h"));
-
-    // display result
   });
 
   const renderHtml = function (obj) {
@@ -82,8 +78,6 @@ const init = () => {
       .querySelector(".comp-container")
       .insertAdjacentHTML("beforeend", contHtml.replace("{HTM}", html));
   };
-
-  // TODO
   btn.addEventListener("click", async (e) => {
     try {
       e.preventDefault();
@@ -110,7 +104,8 @@ const init = () => {
 
       // prepare Ui
       document.documentElement.style.setProperty("--bH", "auto");
-      document.querySelector(".com-row-container")?.remove();
+      const comR = document.querySelector(".com-row-container");
+      comR && comR.remove();
 
       document
         .querySelector(".comp-container")
@@ -162,11 +157,6 @@ const init = () => {
     });
 
     turn = !turn;
-    // data.elements.reverse();
-    // document
-    //   .querySelectorAll(".com-row__result-elm")
-    //   .forEach((el) => (el.textContent = data.elements[i]));
   });
 };
-
 module.exports = init;

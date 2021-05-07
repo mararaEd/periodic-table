@@ -100,9 +100,9 @@ html {
   @media only screen and (max-width: $bp-5) {
     --oH: 3.2rem;
 
-    $h1: 1.3;
+    $h1: 1.8;
     $h2: 2;
-    --hO: 1.3rem;
+    --hO: 1.8rem;
     --hT: 2rem;
 
     $width: 2.5rem;
@@ -112,14 +112,14 @@ html {
   }
 
   @media only screen and (max-width: $bp-6) {
-    --oH: 2.9rem;
+    --oH: 2.95rem;
 
-    $h1: 0.5;
+    $h1: 1;
     $h2: 2;
-    --hO: 0.5rem;
+    --hO: 1rem;
     --hT: 2rem;
 
-    $width: 2.15rem;
+    $width: 2.2rem;
     --w: #{$width};
 
     @include respond(1, $width / 1rem, $h1, $h2);
@@ -136,8 +136,13 @@ body {
 }
 
 .per-container {
+  height: 100%;
   display: grid;
-  grid-template-rows: min-content 8rem min-content min-content;
+  grid-template-rows: min-content 8rem 1fr min-content;
   grid-auto-columns: 1fr;
   row-gap: 2rem;
+
+  @media only screen and (max-width: $bp-6) {
+    grid-template-rows: min-content 13rem 1fr min-content;
+  }
 }
