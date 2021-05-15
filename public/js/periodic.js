@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setTimeout } from "core-js";
 import spinController from "./loader";
 
 class Unit {
@@ -11,12 +12,13 @@ class Unit {
 
   calc(v, u) {
     const conditions = {
-      [this.perference === this.def]: v,
+      [this.perference.trim() === this.def.trim()]: v,
       "o C": v - 273.15,
       "o F": (v - 273.15) * (9 / 5) + 32,
       "kg/m 3": v * 1000,
     };
-    return (conditions[true] || conditions[u]).toFixed(2);
+
+    return conditions[true] || conditions[u].toFixed(2);
   }
 }
 
@@ -51,7 +53,7 @@ const handlePref = function (pre) {
 const reversePref = (txt) =>
   txt.length < 2 ? txt : txt.slice(0, txt.length - 1) + " " + txt.slice(-1);
 
-module.exports = () => {
+export default () => {
   // Elements
   const container = document.querySelector(".container");
   const key = document.querySelector(".key");
@@ -77,6 +79,14 @@ module.exports = () => {
   };
 
   document.addEventListener("click", (e) => {
+    const toggler = e.target.closest(".nav__item-toggle-cont");
+
+    if (toggler) {
+      toggler.classList.toggle("nav__item-toggle-cont--toggled");
+      return setTimeout(() => {
+        document.body.classList.toggle("dark");
+      }, 150);
+    }
     if (e.target.matches("#custom")) {
       // prepare html
       const subCollection = [];
@@ -133,6 +143,7 @@ module.exports = () => {
   });
 
   // Implementing options for units
+
   popup.addEventListener("click", (e) => {
     if (
       !e.target.closest(".popup__content") ||
@@ -180,6 +191,34 @@ module.exports = () => {
       return curOption.classList.add("fform__default-options--v");
     }
 
+    const accTitl = e.target.closest(".elem__overview-heading");
+    if (
+      e.target.classList.contains("h3") ||
+      e.target === accTitl ||
+      e.target.closest(".elem__overview-icon")
+    ) {
+      const { height } = getComputedStyle(accTitl.lastElementChild);
+      const trRel = {
+        0: height,
+        [height]: 0,
+      };
+      const next = document.querySelector(
+        `.elem__overview-heading[data-pos="${+accTitl.dataset.pos + 1}"]`
+      );
+
+      if (next) {
+        next.style.transitionDelay =
+          getComputedStyle(next).transitionDelay.length === 2 ? "0.2s" : "0s";
+
+        const curTy = next.dataset.tr;
+        next.style.marginTop = trRel[curTy];
+        next.dataset.tr = trRel[curTy];
+      }
+
+      accTitl.classList.toggle("elem__overview-heading--sA");
+      accTitl.classList.toggle("elem__overview-heading--btn");
+    }
+
     if (!e.target.closest(".fform__default-options") && curOption) return rem();
   });
 
@@ -193,50 +232,88 @@ module.exports = () => {
   // o F
   // kg/m 3
 
-  const generateDetails = function (det) {
-    let html = "";
-    const keys = Object.keys(det);
-    Object.values(det).forEach((val, i) => {
-      const ordinals = {
-        0: "1<sup>st</sup>",
-        1: "2<sup>nd</sup>",
-        2: "3<sup>rd</sup>",
-      };
+  const cats = {
+    History: ["yearDiscovered", "namedBy", "discoveredBy"],
+    generalProperties: ["period", "electronicConfiguration", "groupBlock"],
+    atomicProperties: [
+      "atomicNumber",
+      "atomicRadius",
+      "bondingType",
+      "oxidationStates",
+      "electronNegetavity",
+      "electronAffinity",
+      "vanDelWaalsRadius",
+    ],
+    physicalProperties: ["boilingPoint", "meltingPoint", "appearance"],
+    summary: ["summary"],
+    ionizationEnergies: ["ionizationEnergies"],
+  };
 
-      const pref = units
-        .slice(0, 2)
-        .find((u) => u.stF.split(" ").join("") === keys[i].toLocaleLowerCase());
+  const accordions = (det) => {
+    const ordinals = {
+      0: "1<sup>st</sup>",
+      1: "2<sup>nd</sup>",
+      2: "3<sup>rd</sup>",
+    };
+    const keys = Object.keys(cats);
 
-      if (Array.isArray(val))
-        return (html = html.concat(
-          val
-            .filter((_, i) => i < 3)
-            .map(
-              (v, i) =>
-                `
+    return keys.map((k, i) => {
+      const nodes = [];
+
+      cats[k].forEach((p) => {
+        const pref = units
+          .slice(0, 2)
+          .find((u) => u.stF.split(" ").join("") === p.toLocaleLowerCase());
+
+        if (Array.isArray(det[p]))
+          return nodes.push(
+            det[p]
+              .filter((_, i) => i < 3)
+              .map(
+                (v, i) =>
+                  `
           <div class="elem__overview-row">
           <h3 class="elem__title">${ordinals[i]} ionization energy</h3>
           <p class="elem__detail">${v}</p>
         </div>
           `
-            )
-            .join("\n")
-        ));
+              )
+              .join("\n")
+          );
 
-      const node = `
-    <div class="elem__overview-row">
-      <h3 class="elem__title">${handleName(keys[i])}</h3>
-      <p class="elem__detail">${
-        pref && val
-          ? pref.calc(val, pref.perference) + " " + handlePref(pref.perference)
-          : val
-      }</p>
-    </div>
-    `;
-      html = html.concat(node);
+        let title =
+          p === "summary"
+            ? ""
+            : `<h3 class="elem__title">${handleName(p)}</h3>`;
+
+        nodes.push(`
+        <div class="elem__overview-row">
+        ${title}
+        <p class="elem__detail">${
+          pref && det[p]
+            ? pref.calc(det[p], pref.perference) +
+              " " +
+              handlePref(pref.perference)
+            : det[p]
+        }</p>
+      </div>        
+        `);
+      });
+
+      return `
+         <div data-tr="0" data-pos="${
+           i + 1
+         }" class="elem__overview-heading elem__overview-heading--sA elem__overview-heading--btn">
+            <svg class="elem__overview-icon">
+              <use xlink:href="/img/sprites.svg#icon-plus"></use>
+            </svg>
+            <h3 class="h3">${handleName(k)}</h3>
+            <div class="elem__overview-accordion">
+                ${nodes.join("\n")}
+            </div>
+        </div>
+         `;
     });
-
-    return html;
   };
 
   const generateHtml = function (prop) {
@@ -256,8 +333,8 @@ module.exports = () => {
     prop.density ? d.calc(prop.density, d.perference) : prop.density
   } ${handlePref(d.perference)}</p>
 
-  <div class="elem__overview">
-     ${generateDetails(filteredObj)}
+  <div class="elem__overview" style="opacity: 0;">
+     ${accordions(filteredObj)}
   </div>
   
   <div class="elem__row">
@@ -310,6 +387,30 @@ module.exports = () => {
       // Remove spinner and Render Element
       spinController.delInterval();
       cont.innerHTML = html;
+
+      // render element with appropriate height
+      const allHeadings = document.querySelectorAll(".elem__overview-heading");
+      [...document.querySelectorAll(".elem__overview-accordion")]
+        .map((el) => getComputedStyle(el).height)
+        .forEach((h, i) => {
+          if (allHeadings.length > i + 1) {
+            allHeadings[i + 1].style.marginTop = h;
+            allHeadings[i + 1].dataset.tr = h;
+          }
+        });
+
+      document.querySelector(".elem__overview").style.opacity = 1;
+      document.querySelectorAll("h3").forEach((el) => {
+        el.addEventListener("mouseenter", (e) => {
+          e.target.parentElement.style.animation =
+            "border-dance 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
+        });
+
+        el.addEventListener("mouseleave", (e) => {
+          e.target.parentElement.style.animation =
+            "border-danc 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
+        });
+      });
     } catch (err) {
       console.log(err);
     }

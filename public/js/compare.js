@@ -159,4 +159,5 @@ const init = () => {
     turn = !turn;
   });
 };
-module.exports = init;
+
+export default init;

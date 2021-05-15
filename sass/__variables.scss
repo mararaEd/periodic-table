@@ -1,30 +1,24 @@
 // colors
-$nonMetal: #00f037;
-$alkaliMetal: #fc3385;
-$alkaliEarthMetal: #f77;
-$lanthanoid: #ffd04c;
-$actinoid: #8ef076;
-$metalloid: #339b8b;
-$metal: #f7f7f7;
-$transitionMetal: #47c2e7;
-$nobleGas: #df34f0;
-$halogen: #9b5af3;
-$post-TransitionMetal: #cdb1a1;
-$postTransitionMetal: #cdb1a1;
+$brand-primary: hsl(0, 100%, 66%);
+$brand-secondary: hsl(180, 52%, 39%);
+
+$elementsHov: hsl(134, 100%, 47%), hsl(336, 97%, 59%), hsl(0, 100%, 73%),
+  hsl(200, 20%, 50%), #8ef076, #339b8b, #ffd04c, #47c2e7, #df34f0, #cdb1a1,
+  #cdb1a1, #9b5af3;
 
 $elements: (
-  "nonmetal": $nonMetal,
-  "alkaliMetal": $alkaliMetal,
-  "alkalineEarthMetal": $alkaliEarthMetal,
-  "metal": $nonMetal,
-  "actinoid": $actinoid,
-  "metalloid": $metalloid,
-  "lanthanoid": $lanthanoid,
-  "transitionMetal": $transitionMetal,
-  "nobleGas": $nobleGas,
-  "post-TransitionMetal": $post-TransitionMetal,
-  "postTransitionMetal": $post-TransitionMetal,
-  "halogen": $halogen,
+  "nonmetal": var(--nonmetal),
+  "alkaliMetal": var(--alkaliMetal),
+  "alkalineEarthMetal": var(--alkaliEarthMetal),
+  "metal": var(--metal),
+  "actinoid": var(--actinoid),
+  "metalloid": var(--metalloid),
+  "lanthanoid": var(--lanthanoid),
+  "transitionMetal": var(--transitionMetal),
+  "nobleGas": var(--nobleGas),
+  "post-TransitionMetal": var(--post-TransitionMetal),
+  "postTransitionMetal": var(--post-TransitionMetal),
+  "halogen": var(--halogen),
 );
 
 $bp-1: 76.25em;
@@ -40,5 +34,4 @@ $bp-last: 23.875em;
 $bp-c1: 45.125em;
 $bp-c2: 32.5em;
 
-$lineColor: #191919;
 $color-bl: #191919;

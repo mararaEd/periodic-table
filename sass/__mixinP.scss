@@ -32,8 +32,7 @@
   transform-origin: bottom;
   width: 1px;
   height: $h;
-  background-color: $lineColor;
+  background-color: var(--theme-linecolor);
   transform: translate(-50%, -100%) scaleY(0);
-  backface-visibility: hidden;
   z-index: -1;
 }

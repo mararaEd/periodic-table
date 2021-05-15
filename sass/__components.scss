@@ -1,6 +1,9 @@
+@use "sass:list";
+
 sup {
   margin: 0 0.1rem;
 }
+
 .container {
   display: grid;
   justify-items: center;
@@ -14,12 +17,44 @@ sup {
   align-self: center;
 
   @media only screen and (max-width: $bp-7) {
-    width: 100%;
     overflow-x: scroll;
-    overflow-y: hidden;
   }
 
   row-gap: var(--hT);
+}
+
+// toggler
+.toggler {
+  margin-left: auto;
+  flex: 0 0 3.4rem;
+
+  &__line {
+    height: 2px;
+    position: relative;
+    background-image: linear-gradient(
+      to left,
+      rgba(#fff, 0.6) 50%,
+      var(--theme-secondary) 50%
+    );
+    background-size: 200%;
+    background-position: right;
+    transition: all 0.15s;
+
+    // TODO
+    &:before {
+      position: absolute;
+      content: " ";
+      left: -5%;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: var(--theme-secondary-dark);
+      border-radius: 50%;
+      width: 1.4rem;
+      height: 1.4rem;
+      box-shadow: 0 0.1rem 0.1rem rgba(0, 0, 0, 0.2);
+      transition: all 0.15s;
+    }
+  }
 }
 
 // Row
@@ -82,17 +117,20 @@ sup {
   padding: 0.1rem 0.07rem;
   width: var(--w);
   height: var(--oH);
-
   backface-visibility: hidden;
-  background: white;
   display: grid;
   justify-items: center;
   align-items: center;
   line-height: 1;
   position: relative;
   z-index: 500;
-  border-right: 2px solid;
-  border-image: linear-gradient(to top, transparent 10%, white) 1;
+  border-right: solid 2px transparent;
+
+  &--noblegas {
+    border-right: none;
+  }
+
+  // TODO
 
   &__atN {
     font-size: 1.89rem;
@@ -166,22 +204,28 @@ sup {
   padding: 0 20rem;
 }
 
+$index: 0;
 @each $name, $color in $elements {
+  $index: $index + 1;
+
   .elm--#{$name} {
-    background-image: linear-gradient(
-      to bottom,
-      lighten($color, 15%) 30%,
-      $color
-    );
+    background: linear-gradient(
+          to bottom,
+          lighten(list.nth($elementsHov, $index), 15%) 30%,
+          $color
+        )
+        padding-box,
+      linear-gradient(to top, $color 35%, var(--theme) 45%);
     transition: all 0.07s;
     cursor: pointer;
 
     &:hover {
       background-image: linear-gradient(
-        to top,
-        darken($color, 5%),
-        lighten($color, 8%)
-      );
+          to top,
+          darken(list.nth($elementsHov, $index), 2%),
+          lighten(list.nth($elementsHov, $index), 7%)
+        ),
+        linear-gradient(to top, $color 35%, var(--theme) 45%);
     }
   }
 }
@@ -193,13 +237,15 @@ sup {
   height: 100%;
   top: 0;
   left: 0;
-  backdrop-filter: blur(3px);
-  background: rgba(0, 0, 0, 0.6);
   z-index: 9999999999999999999999999999;
   opacity: 0;
   visibility: hidden;
 
   transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  // TODO JS to do the following for dark theme
+  background: var(--theme-popup);
+  backdrop-filter: var(--theme-popup-bd);
 
   &--show {
     opacity: 1;
@@ -209,6 +255,7 @@ sup {
   &__element {
     margin-top: 1rem;
     height: 100%;
+
     display: grid;
     grid-template-rows: min-content 4rem 1fr min-content;
     grid-template-columns: min-content 1fr;
@@ -219,7 +266,7 @@ sup {
     padding-left: 2rem;
     padding-top: 1rem;
     padding-bottom: 2rem;
-    background: rgb(252, 249, 249);
+    background: var(--theme-overlay-3);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -251,7 +298,7 @@ sup {
     height: 2.8rem;
     top: 0.1rem;
     right: 0.2rem;
-    fill: #20979bc2;
+    fill: var(--theme-secondary);
     cursor: pointer;
     transition: all 0.2s;
 
@@ -271,7 +318,7 @@ sup {
     grid-column: 2 / 3;
     align-self: center;
     justify-self: end;
-    color: rgba(62, 62, 189, 0.884);
+    color: var(--gBlock, rgba(62, 62, 189, 0.884));
     text-transform: uppercase;
     font-size: 2rem;
     text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.2);
@@ -290,12 +337,13 @@ sup {
   &__name,
   &__den {
     grid-row: 2 / 3;
-    color: #b922b9;
+    color: var(--den);
     align-self: s tart;
     font-size: 1.25rem;
   }
 
   &__name {
+    padding-top: 0.3rem;
     grid-column: 1 / 2;
     text-transform: uppercase;
     letter-spacing: 0.1rem;
@@ -311,18 +359,104 @@ sup {
     grid-column: 1 / -1;
     display: grid;
     grid-auto-rows: min-content;
-    row-gap: 2rem;
     overflow-y: scroll;
 
+    &-icon {
+      width: 2rem;
+      height: 2rem;
+      margin-left: 1rem;
+      fill: var(--theme-secondary);
+      transition: all 0.2s;
+    }
+
+    &-heading {
+      &--btn .elem__overview-icon {
+        transform: rotate(225deg);
+      }
+
+      display: flex;
+      align-items: center;
+      position: relative;
+      cursor: default;
+      border: 1px solid transparent;
+      color: var(--theme-he-text);
+      font-size: 3.4rem;
+      padding: 2px;
+      background: var(
+            --theme-headingG,
+            linear-gradient(
+              45deg,
+              hsla(0, 40%, 60%, 0.1),
+              hsl(0, 50%, 50%, 0.2)
+            )
+          )
+          content-box,
+        linear-gradient(
+            90deg,
+            rgb(0, 153, 255),
+            rgb(203, 6, 230) 20%,
+            rgb(57, 176, 255) 20%,
+            transparent 20%
+          )
+          border-box,
+        linear-gradient(
+            90deg,
+            rgb(0, 153, 255),
+            rgb(203, 6, 230) 20%,
+            rgb(57, 176, 255) 20%,
+            transparent 20%
+          )
+          border-box,
+        linear-gradient(
+            0deg,
+            rgb(0, 153, 255),
+            rgb(203, 6, 230) 20%,
+            rgb(57, 176, 255) 20%,
+            transparent 20%
+          )
+          border-box,
+        linear-gradient(
+            0deg,
+            rgb(0, 153, 255),
+            rgb(203, 6, 230) 20%,
+            rgb(57, 176, 255) 20%,
+            transparent 20%
+          )
+          border-box;
+      background-repeat: no-repeat, repeat-x, repeat-x, repeat-y, repeat-y;
+      background-size: 100%, 200% 2px, 200% 2px, 2px 200%, 2px 200%;
+      background-position: 0 0, 40% 0, -100% 100%, 100% 0%, 0 0%;
+      transition: all 0.42s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transition-delay: 0s;
+      margin-right: 1.3rem;
+    }
+
+    &-heading--sA &-accordion {
+      transform: rotateX(0deg) translateY(1px) scale(1);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    &-accordion {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      opacity: 0;
+      transform: rotateX(-25deg) translateY(-4px) scale(0.8);
+      visibility: hidden;
+      transition: all 0.42s ease-in;
+    }
+
     &-row {
-      padding-right: 2rem;
-      color: #464646;
+      color: var(--theme-mee-text);
       text-transform: capitalize;
-      padding-bottom: 1.3rem;
+      font-size: 1.4rem;
+      padding: 0.5rem 2rem;
+      padding-left: 0;
       display: flex;
       justify-content: space-between;
-      border-bottom: 2px solid rgba(#2a2a2a, 0.2);
-      font-size: 1.25rem;
+      border-bottom: 1px solid var(--theme-de-text);
     }
   }
 
@@ -348,7 +482,7 @@ sup {
 
   &__title {
     margin-right: 4rem;
-    font-size: 1.25rem;
+    font-size: 1.45rem;
     font-weight: 400;
     font-family: "Oxygen", sans-serif;
   }
@@ -386,16 +520,16 @@ sup {
   &--sh {
     opacity: 1;
     visibility: visible;
-    box-shadow: 0 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0.01rem 0.08rem 0.2rem rgba(0, 0, 0, 0.09);
   }
 
   transform: translateY(100%);
-  background-color: #ffffff;
+  background-color: var(--theme-overlay-1);
   position: absolute;
   bottom: 0;
   left: 0;
   z-index: 300;
-  color: rgb(20, 19, 19);
+  color: var(--theme-he-text);
   display: grid;
   align-items: center;
   row-gap: 0.2rem;
@@ -439,8 +573,8 @@ sup {
   padding-right: 2rem;
 
   &__text {
-    color: $color-bl;
     font-size: 1.5rem;
+    color: var(--theme-le-text);
 
     span {
       transition: all 0.2s;
@@ -556,14 +690,8 @@ sup {
   text-align: center;
 
   &__title {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
     margin-bottom: 1rem;
   }
@@ -593,29 +721,25 @@ sup {
   flex: 0 0 24rem;
 
   @media only screen and (max-width: $bp-last) {
-    flex: 0 0 16rem;
-  }
-
-  @media only screen and (max-width: 283px) {
     flex: 0 0 14rem;
   }
 }
 
-$color-primary: #ff5050;
-$color-secondary: #d41616;
 .logo {
   height: 7rem;
-  @media only screen and (max-width: $bp-last) {
-    height: 4rem;
-  }
+  filter: var(--theme-logo-filter);
 
-  @media only screen and (max-width: 283px) {
+  @media only screen and (max-width: $bp-last) {
     height: 3rem;
   }
 }
 
 .logo-text {
-  background-image: linear-gradient(to right, $color-primary 30%, #26c588);
+  background-image: linear-gradient(
+    to right,
+    $brand-primary 30%,
+    $brand-secondary
+  );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -631,7 +755,7 @@ $color-secondary: #d41616;
   text-transform: capitalize;
 
   &--p {
-    color: $color-bl;
+    color: var(--theme-he-text);
     font-weight: 100;
 
     text-align: center;
@@ -653,7 +777,8 @@ $color-secondary: #d41616;
   }
 }
 
-.h2 {
+.h2,
+.h3 {
   font-weight: 300;
   font-family: "Rubik", sans-serif;
   font-size: 2.8rem;
@@ -662,8 +787,16 @@ $color-secondary: #d41616;
   &--black {
     margin-top: 1rem;
     text-align: center;
-    color: #000000;
+    color: var(--theme-he-text);
   }
+}
+
+.h3 {
+  font-size: 2.4rem;
+  color: var(--theme-tertiary-light);
+  flex: 1;
+  text-align: center;
+  text-transform: capitalize;
 }
 
 // BUTTON
@@ -671,7 +804,7 @@ $color-secondary: #d41616;
   &,
   &:visited,
   &:link {
-    background-color: $color-primary;
+    background-color: var(--theme-primary);
     text-decoration: none;
     cursor: pointer;
     padding: 0.4rem 0.5rem;
@@ -703,12 +836,13 @@ $color-secondary: #d41616;
       transform: scaleY(0);
       transition: transform 0.2s, width 0.4s cubic-bezier(1, 0, 0, 1) 0.2s,
         background-color 0.1s;
+      border-radius: 5px;
     }
 
     &:hover:before {
       transform: scaleY(1);
       width: 100%;
-      background-color: $color-secondary;
+      background-color: var(--theme-primary-dark);
     }
   }
 
@@ -741,6 +875,7 @@ $color-secondary: #d41616;
     margin-bottom: 2rem;
     margin-right: 14vw;
     border: none;
+    color: black;
     background-color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     transition: all 0.2s;
@@ -787,7 +922,7 @@ $color-secondary: #d41616;
 
   &__default {
     position: relative;
-    border: 1px solid #00000073;
+    border: 1px solid var(--theme-le-text);
     padding: 0.5rem 1rem;
     font-size: 1.4rem;
     width: 24rem;
@@ -797,16 +932,17 @@ $color-secondary: #d41616;
     transition: all 0.1s;
     display: flex;
     justify-content: space-between;
+    color: var(--theme-le-text);
 
     &-icon {
-      fill: #0000009a;
+      fill: var(--theme-le-text);
       width: 2rem;
       height: 2rem;
     }
 
     &:hover {
-      border: 1px solid #000000c5;
-      background-color: #ffffffe1;
+      border: 1px solid var(--theme-he-text);
+      background-color: var(--theme-def-hov);
     }
 
     &--b {
@@ -819,6 +955,8 @@ $color-secondary: #d41616;
 
     &-options {
       background-color: rgb(252, 252, 252);
+      background-color: var(--theme-overlay-4, rgb(252, 252, 252));
+
       position: absolute;
       border: 1px solid darken(rgb(252, 252, 252), 10%);
       width: 100%;
@@ -841,21 +979,17 @@ $color-secondary: #d41616;
         cursor: default;
 
         &:hover {
-          background-image: linear-gradient(
-            to right,
-            rgba(219, 219, 219, 0.625),
-            rgba(230, 218, 218, 0.452)
-          );
+          background-image: var(--theme-opt-gr);
         }
 
         &--c {
           color: #ffffff;
-          background-color: rgb(10, 99, 151);
+          background-color: var(--theme-tertiary);
           transition: all 0.1s;
 
           &:hover {
             background-image: none;
-            background-color: rgb(21, 128, 190);
+            background-color: var(--theme-tertiary-light);
           }
         }
       }
@@ -865,6 +999,7 @@ $color-secondary: #d41616;
   &__label {
     font-size: 1.8rem;
     margin-right: 2rem;
+    color: var(--theme-he-text);
   }
 
   &__group {
@@ -875,12 +1010,12 @@ $color-secondary: #d41616;
 
   &__input {
     border: none;
-    background-color: rgb(202, 209, 212, 0.2);
+    background-color: var(--theme-search);
     padding: 0.5rem 1.5rem;
     border-radius: 100px;
-    box-shadow: 0 0.2rem 0.3rem rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0.2rem 0.3rem rgba(0, 0, 0, 0.1);
     font-size: 1.6rem;
-    color: rgba(0, 0, 0, 0.567);
+    color: var(--theme-he-text);
     width: 25rem;
     transition: width 0.2s, border 0.1s;
 
@@ -891,7 +1026,7 @@ $color-secondary: #d41616;
     &:focus {
       width: 26rem;
       outline: none;
-      border: 1px solid #ff50509f;
+      border: 1px solid var(--theme-secondary);
 
       @media only screen and (max-width: 398px) {
         width: 25rem;
@@ -902,11 +1037,9 @@ $color-secondary: #d41616;
       }
     }
 
-    &::placeholder {
-      color: rgba(0, 0, 0, 0.467);
-    }
+    &::placeholder,
     &::-webkit-input-placeholder {
-      color: rgba(0, 0, 0, 0.467);
+      color: --theme-le-text;
     }
   }
 
@@ -917,14 +1050,16 @@ $color-secondary: #d41616;
     opacity: 0.4;
     cursor: pointer;
     margin-right: auto;
+    fill: var(--theme-he-text);
   }
 }
 
 // nav
 .nav {
   position: relative;
+  background: var(--theme-overlay-1);
   padding: 0.5rem 1rem;
-  box-shadow: 0 0.02rem 0.2rem 0.2rem rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.05rem 0.2rem 0.2rem rgba(0, 0, 0, 0.1);
 
   display: flex;
   align-items: center;
@@ -942,47 +1077,87 @@ $color-secondary: #d41616;
   }
 
   &__item {
+    z-index: 400;
     margin-left: 2rem;
 
     @media only screen and (max-width: $bp-last) {
       margin-left: 1rem;
     }
 
-    &-c {
-      // @media only screen and (max-width: $bp-s) {
-      //   margin-left: auto;
-      // }
+    &-toggle {
+      cursor: default;
+      &-cont {
+        width: 90%;
+        align-self: stretch;
+        display: flex;
+        padding: 0.4rem;
+        align-items: center;
+        position: relative;
 
-      &:hover {
-        border-radius: 0;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
+        &:before {
+          position: absolute;
+          top: 0;
+          left: 0;
+          content: " ";
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+          clip-path: ellipse(4% 90%);
+          transition: clip-path 0.2s 0.05s, background-color 0.05s;
+        }
+
+        &:focus,
+        &:active {
+          &:before {
+            background-color: rgba(255, 255, 255, 0.137);
+            clip-path: ellipse(100% 100%);
+          }
+        }
+
+        &--toggled {
+          .toggler .toggler__line {
+            background-position: left;
+          }
+
+          .toggler .toggler__line:before {
+            left: 75%;
+          }
+        }
+      }
+
+      &-text {
+        word-wrap: nowrap;
       }
     }
 
     &-menu {
+      z-index: 4000;
+      width: 220%;
       position: absolute;
       bottom: 0;
-      left: 0;
-      width: 180%;
+      right: 0;
       transform: translateY(103%) scaleY(0);
       padding-top: 3rem;
       padding-bottom: 1rem;
-      color: transparent;
-
-      clip-path: polygon(0 20%, 5% 0%, 10% 20%, 100% 20%, 100% 100%, 0 100%);
+      box-shadow: 0 0.2rem 0.3rem rgba(0, 0, 0, 0.2);
+      clip-path: polygon(0 20%, 92% 20%, 99% 0, 100% 20%, 100% 100%, 0 100%);
       transition: all 0.1s;
     }
 
     &-ul {
+      padding-left: 2rem;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
     }
 
     &-button {
       font-size: 1.5rem;
-      background-image: linear-gradient(130deg, transparent 50%, #d41616 50%);
+      background-image: linear-gradient(
+        130deg,
+        transparent 50%,
+        rgba(#ffffff, 0.14) 50%
+      );
       background-size: 220%;
       transition: all 0.3s;
       padding: 0.1rem 0.4rem;
@@ -993,10 +1168,9 @@ $color-secondary: #d41616;
     }
 
     &--v &-menu {
-      width: 180%;
       transform: translateY(103%) scaleY(1);
-      background-color: #ff5050;
-      color: #f7f7f7f7;
+      background-color: var(--theme-overlay-2);
+      color: #f7f7f7;
     }
 
     &-icon {
