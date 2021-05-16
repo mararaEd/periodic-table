@@ -13,7 +13,7 @@
     "build:css": "npm-run-all compile:sass compress:css",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
     "start:js": "webpack-dev-server --mode development --open",
-    "build:js": "webpack --mode production"
+    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
   "author": "Marara Edosa and Naol Abidsa",
   "license": "ISC",
