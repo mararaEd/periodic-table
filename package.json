@@ -12,7 +12,7 @@
     "compress:css": "cleancss -o public/css/style-min.css public/css/style.css",
     "build:css": "npm-run-all compile:sass compress:css",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
-    "dev:js": "webpack --mode development",
+    "start:js": "webpack-dev-server --mode development --open",
     "build:js": "webpack --mode production"
   },
   "author": "Marara Edosa and Naol Abidsa",
@@ -36,7 +36,8 @@
     "postcss-cli": "^8.3.1",
     "vite": "^2.3.2",
     "webpack": "^5.37.0",
-    "webpack-cli": "^4.7.0"
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2"
   },
   "engines": {
     "node": ">=10.0.0"

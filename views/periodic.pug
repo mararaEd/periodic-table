@@ -54,66 +54,21 @@ block content
             each elm in elmGroup 
               +elm(elm.symbol,elm.atomicNumber,handleName(elm.groupBlock) ,i+1)
     .footer 
+      .logo-box.logo-box--foot 
+         img(src="/img/logo.png" alt="logo" class="logo") 
+         .logo-text Periodic-mn
+      nav.footer__nav
+        ul.footer__list 
+          a.footer__link company 
+          a.footer__link contact us
+          a.footer__link careers
+          a.footer__link privacy policy
+          a.footer__link terms
       <p class="footer__text">2021 &copy; developed by <span>Marara Edosa</span> & <span>Naol Abdisa</span></p>
     .popup
       .popup__content
         svg.popup__close
           use(xlink:href='/img/sprites.svg#icon-cross')
-        //- h2.h2.h2--black customize your units
-        //- .fform__container
-        //-   .fform
-        //-     .fform__group
-        //-       .fform__label g/mol
-        //-       .fform__default
-        //-         .fform__default-text g/mol
-        //-         svg.fform__default-icon
-        //-           use(xlink:href='/img/sprites.svg#icon-chevron-down') 
-        //-         .fform__default-options
-        //-           .fform__default-optionsOpt kg/m3 
-        //-           .fform__default-optionsOpt test option1 
-        //-           .fform__default-optionsOpt test option 2
-        //-           .fform__default-optionsOpt g/mol
-        //-           .fform__default-optionsOpt test option 4
-        //-     .fform__group
-        //-       .fform__label g/mol
-        //-       .fform__default
-        //-         .fform__default-text g/mol
-        //-         .fform__default-options
-        //-           .fform__default-optionsOpt kg/m3 
-        //-           .fform__default-optionsOpt test option1 
-        //-           .fform__default-optionsOpt test option 2
-        //-           .fform__default-optionsOpt g/mol
-        //-           .fform__default-optionsOpt test option 
-        //-     .fform__group
-        //-       .fform__label g/mol
-        //-       .fform__default
-        //-         .fform__default-text g/mol
-        //-         .fform__default-options
-        //-           .fform__default-optionsOpt kg/m3 
-        //-           .fform__default-optionsOpt test option1 
-        //-           .fform__default-optionsOpt test option 2
-        //-           .fform__default-optionsOpt g/mol
-        //-           .fform__default-optionsOpt test option 4
-        //-     .fform__group
-        //-       .fform__label g/mol
-        //-       .fform__default
-        //-         .fform__default-text g/mol
-        //-         .fform__default-options
-        //-           .fform__default-optionsOpt kg/m3 
-        //-           .fform__default-optionsOpt test option1 
-        //-           .fform__default-optionsOpt test option 2
-        //-           .fform__default-optionsOpt g/mol
-        //-           .fform__default-optionsOpt test option 4    
-          //- a.btn.btn--sa.btn--form Done               
-                   
-            
-                   
-
-
-         
-
-    
-
     script( src="/js/bundle.js")
     
 

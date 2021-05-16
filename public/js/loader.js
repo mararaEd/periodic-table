@@ -63,7 +63,13 @@ exports.startAnimation = function (elmI) {
     i++;
   }, 305);
 };
+
 exports.stopAnimation = () => {
   clearInterval(intervalId);
+  setProperty("", "");
 };
-exports.delInterval = () => clearInterval(intervalId);
+
+exports.delInterval = () => {
+  clearInterval(intervalId);
+  setProperty("", "");
+};

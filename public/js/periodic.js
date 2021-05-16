@@ -61,9 +61,7 @@ export default () => {
   const popupContent = document.querySelector(".popup__content");
   const searchBtn = document.querySelector(".fform__icon");
   const searchInp = document.querySelector(".fform__input");
-
-  let curDef;
-  let curOption;
+  let elmRow, landscape, curDef, curOption;
 
   const remCustom = function () {
     if (popupContent.lastElementChild.classList.contains("fform__container"))
@@ -202,9 +200,12 @@ export default () => {
         0: height,
         [height]: 0,
       };
-      const next = document.querySelector(
+
+      let next = document.querySelector(
         `.elem__overview-heading[data-pos="${+accTitl.dataset.pos + 1}"]`
       );
+
+      if (!next && landscape) next = elmRow;
 
       if (next) {
         next.style.transitionDelay =
@@ -355,62 +356,78 @@ export default () => {
       remCustom();
       popup.classList.add("popup--show");
 
-      const cont = document.createElement("div");
-      cont.classList.add("popup__element");
+      setTimeout(async () => {
+        const cont = document.createElement("div");
+        cont.classList.add("popup__element");
 
-      popupContent.appendChild(cont);
-      spinController.startAnimation(cont);
+        popupContent.appendChild(cont);
+        spinController.startAnimation(cont);
 
-      // Prepare
-      const myElm = await axios(`/api/v1/element/?${field}=${query}`);
-      const [elementProp] = myElm.data.data.elements;
+        // Prepare
+        const myElm = await axios(`/api/v1/element/?${field}=${query}`);
+        const [elementProp] = myElm.data.data.elements;
 
-      if (!elementProp) {
-        const al = document.querySelector(".alert");
-        al && al.remove();
-        const htm = ` 
+        if (!elementProp) {
+          const al = document.querySelector(".alert");
+          al && al.remove();
+          const htm = ` 
           <div class="alert alert--error">Sorry, no element found with that name</div>
         `;
-        popup.classList.remove("popup--show");
-        spinController.delInterval();
+          popup.classList.remove("popup--show");
+          spinController.delInterval();
 
-        container.insertAdjacentHTML("beforebegin", htm);
+          container.insertAdjacentHTML("beforebegin", htm);
 
-        return setTimeout(
-          () => document.querySelector(".alert").classList.add("alert--h"),
-          3000
-        );
-      }
+          return setTimeout(
+            () => document.querySelector(".alert").classList.add("alert--h"),
+            3000
+          );
+        }
 
-      const html = generateHtml(elementProp);
+        const html = generateHtml(elementProp);
 
-      // Remove spinner and Render Element
-      spinController.delInterval();
-      cont.innerHTML = html;
+        // Remove spinner and Render Element
+        setTimeout(() => {
+          spinController.delInterval();
+          cont.innerHTML = html;
 
-      // render element with appropriate height
-      const allHeadings = document.querySelectorAll(".elem__overview-heading");
-      [...document.querySelectorAll(".elem__overview-accordion")]
-        .map((el) => getComputedStyle(el).height)
-        .forEach((h, i) => {
-          if (allHeadings.length > i + 1) {
-            allHeadings[i + 1].style.marginTop = h;
-            allHeadings[i + 1].dataset.tr = h;
+          // render element with appropriate height
+          const allHeadings = document.querySelectorAll(
+            ".elem__overview-heading"
+          );
+          const allH = [
+            ...document.querySelectorAll(".elem__overview-accordion"),
+          ].map((el) => getComputedStyle(el).height);
+
+          allH.forEach((h, i) => {
+            if (allHeadings.length > i + 1) {
+              allHeadings[i + 1].style.marginTop = h;
+              allHeadings[i + 1].dataset.tr = h;
+            }
+          });
+
+          elmRow = document.querySelector(".elem__row");
+          landscape = Number.parseFloat(getComputedStyle(elmRow).marginTop);
+
+          if (landscape) {
+            elmRow.style.marginTop = allH[allH.length - 1];
+            elmRow.dataset.tr = allH[allH.length - 1];
           }
-        });
 
-      document.querySelector(".elem__overview").style.opacity = 1;
-      document.querySelectorAll("h3").forEach((el) => {
-        el.addEventListener("mouseenter", (e) => {
-          e.target.parentElement.style.animation =
-            "border-dance 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
-        });
+          document.querySelector(".elem__overview").style.opacity = 1;
+          document.querySelectorAll("h3").forEach((el) => {
+            el.addEventListener("mouseenter", (e) => {
+              e.target.parentElement.style.animation =
+                "border-dance 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
+            });
 
-        el.addEventListener("mouseleave", (e) => {
-          e.target.parentElement.style.animation =
-            "border-danc 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
-        });
-      });
+            el.addEventListener("mouseleave", (e) => {
+              e.target.parentElement.style.animation =
+                "border-danc 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
+            });
+          });
+        }, 5000);
+      }, 200);
     } catch (err) {
       console.log(err);
     }

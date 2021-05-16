@@ -1,4 +1,6 @@
-"use strict";
+("use strict");
+// import '@babel/polyfill';
+
 import initCompare from "./compare";
 import initPeriodic from "./periodic";
 
