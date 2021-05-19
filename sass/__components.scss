@@ -596,16 +596,14 @@ $index: 0;
   grid-template-columns: repeat(2, 1fr);
   color: #f7f7f7;
 
-  &__nav {
-    @media only screen and (max-width: 820px) {
-      grid-column: 1 / -1;
-    }
-  }
-
   &__nav,
   &__text {
     border-top: 1px solid hsl(0, 0%, 50%);
     padding-top: 2rem;
+
+    @media only screen and (max-width: 820px) {
+      grid-column: 1 / -1;
+    }
   }
 
   &__list {

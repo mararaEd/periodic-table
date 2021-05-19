@@ -107,17 +107,21 @@ const init = () => {
       const comR = document.querySelector(".com-row-container");
       comR && comR.remove();
 
-      document
-        .querySelector(".comp-container")
-        .insertAdjacentHTML(
-          "beforeend",
-          `<div class="com-row-container"></div>`
-        );
-
-      spinController.startAnimation(
-        document.querySelector(".com-row-container")
+      document.querySelector(".comp-container").insertAdjacentHTML(
+        "beforeend",
+        `<div class="com-row-container">
+            <div class="loader">
+              <div class="loader__ball"></div>
+              <div class="loader__bar loader__bar--1"></div>
+              <div class="loader__bar loader__bar--2"></div>
+              <div class="loader__bar loader__bar--3"></div>
+              <div class="loader__bar loader__bar--4"></div>
+              <div class="loader__bar loader__bar--5"></div>
+            </div>              
+          </div>`
       );
 
+      spinController.startAnimation();
       sBtn.classList.add("btn--sort--sh");
 
       const result = await axios({
@@ -129,9 +133,7 @@ const init = () => {
         },
       });
 
-      spinController.stopAnimation(
-        document.querySelector(".com-row-container")
-      );
+      spinController.delInterval();
 
       document.querySelector(".com-row-container").remove();
 

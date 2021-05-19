@@ -7,21 +7,11 @@ const setProperty = function (...values) {
   });
 };
 
+const commonX = "0.35s ease-in forwards";
+const commonY = "0.35s ease-out forwards";
+
 exports.startAnimation = function (elmI) {
-  const loader = `
-  <div class="loader">
-    <div class="loader__ball"></div>
-    <div class="loader__bar loader__bar--1"></div>
-    <div class="loader__bar loader__bar--2"></div>
-    <div class="loader__bar loader__bar--3"></div>
-    <div class="loader__bar loader__bar--4"></div>
-    <div class="loader__bar loader__bar--5"></div>
-  </div>    
-  `;
-  elmI.insertAdjacentHTML("beforeEnd", loader);
   const clipO = [3.28, 2.46, 1.64, 0.82, 0];
-  const commonX = "0.35s ease-in forwards";
-  const commonY = "0.35s ease-out forwards";
   const allLoaders = document.querySelectorAll(".loader__bar");
   let i = 2;
   let sec = false;

@@ -1115,14 +1115,14 @@ sup {
   grid-template-columns: repeat(2, 1fr);
   color: #f7f7f7;
 }
-@media only screen and (max-width: 820px) {
-  .footer__nav {
-    grid-column: 1/-1;
-  }
-}
 .footer__nav, .footer__text {
   border-top: 1px solid gray;
   padding-top: 2rem;
+}
+@media only screen and (max-width: 820px) {
+  .footer__nav, .footer__text {
+    grid-column: 1/-1;
+  }
 }
 .footer__list {
   display: flex;

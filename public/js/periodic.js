@@ -353,15 +353,24 @@ export default () => {
 
   const loadProperties = async ({ field, query }) => {
     try {
-      remCustom();
-      popup.classList.add("popup--show");
-
       setTimeout(async () => {
-        const cont = document.createElement("div");
-        cont.classList.add("popup__element");
+        const bone = `
+        <div class="popup__element">
+        <div class="loader">
+              <div class="loader__ball"></div>
+              <div class="loader__bar loader__bar--1"></div>
+              <div class="loader__bar loader__bar--2"></div>
+              <div class="loader__bar loader__bar--3"></div>
+              <div class="loader__bar loader__bar--4"></div>
+              <div class="loader__bar loader__bar--5"></div>
+              </div>  
+              </div>
+              `;
 
-        popupContent.appendChild(cont);
-        spinController.startAnimation(cont);
+        remCustom();
+        popupContent.insertAdjacentHTML("beforeend", bone);
+        popup.classList.add("popup--show");
+        spinController.startAnimation();
 
         // Prepare
         const myElm = await axios(`/api/v1/element/?${field}=${query}`);
@@ -389,7 +398,7 @@ export default () => {
         // Remove spinner and Render Element
         setTimeout(() => {
           spinController.delInterval();
-          cont.innerHTML = html;
+          document.querySelector(".popup__element").innerHTML = html;
 
           // render element with appropriate height
           const allHeadings = document.querySelectorAll(
