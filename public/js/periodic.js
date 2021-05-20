@@ -276,7 +276,7 @@ export default () => {
           <div class="elem__overview-row">
           <h3 class="elem__title">${ordinals[i]} ionization energy</h3>
           <p class="elem__detail">${v}</p>
-        </div>
+          </div>
           `
               )
               .join("\n")
@@ -288,32 +288,32 @@ export default () => {
             : `<h3 class="elem__title">${handleName(p)}</h3>`;
 
         nodes.push(`
-        <div class="elem__overview-row">
-        ${title}
-        <p class="elem__detail">${
-          pref && det[p]
-            ? pref.calc(det[p], pref.perference) +
-              " " +
-              handlePref(pref.perference)
-            : det[p]
-        }</p>
+            <div class="elem__overview-row">
+            ${title}
+            <p class="elem__detail">${
+              pref && det[p]
+                ? pref.calc(det[p], pref.perference) +
+                  " " +
+                  handlePref(pref.perference)
+                : det[p]
+            }</p>
       </div>        
-        `);
+      `);
       });
 
       return `
-         <div data-tr="0" data-pos="${
-           i + 1
-         }" class="elem__overview-heading elem__overview-heading--sA elem__overview-heading--btn">
-            <svg class="elem__overview-icon">
-              <use xlink:href="/img/sprites.svg#icon-plus"></use>
-            </svg>
-            <h3 class="h3">${handleName(k)}</h3>
-            <div class="elem__overview-accordion">
-                ${nodes.join("\n")}
-            </div>
+    <div data-tr="0" data-pos="${
+      i + 1
+    }" class="elem__overview-heading elem__overview-heading--sA elem__overview-heading--btn">
+    <svg class="elem__overview-icon">
+    <use xlink:href="/img/sprites.svg#icon-plus"></use>
+    </svg>
+    <h3 class="h3">${handleName(k)}</h3>
+    <div class="elem__overview-accordion">
+    ${nodes.join("\n")}
+    </div>
         </div>
-         `;
+        `;
     });
   };
 
@@ -327,18 +327,18 @@ export default () => {
     });
 
     return `
-  <h2 class="elem__sym">${prop.symbol}</h2>
-  <p class="elem__group">${handleName(prop.groupBlock)}</p>
-  <p class="elem__name">${prop.name}</p>
-  <p class="elem__den">${
-    prop.density ? d.calc(prop.density, d.perference) : prop.density
-  } ${handlePref(d.perference)}</p>
-
-  <div class="elem__overview" style="opacity: 0;">
-     ${accordions(filteredObj)}
-  </div>
-  
-  <div class="elem__row">
+    <h2 class="elem__sym">${prop.symbol}</h2>
+    <p class="elem__group">${handleName(prop.groupBlock)}</p>
+    <p class="elem__name">${prop.name}</p>
+    <p class="elem__den">${
+      prop.density ? d.calc(prop.density, d.perference) : prop.density
+    } ${handlePref(d.perference)}</p>
+    
+    <div class="elem__overview" style="opacity: 0;">
+    ${accordions(filteredObj)}
+    </div>
+    
+    <div class="elem__row">
     <span class="elm__num">${prop.atomicNumber}</span>
     <span class="elm__num c">${prop.atomicNumber}</span>
     <span class="elm__num e">${
@@ -347,96 +347,90 @@ export default () => {
     <span class="elm__e">electrons</span>
     <span class="elm__p c">protons</span>
     <span class="elm__n e">neutrons</span>
-  </div>
-  `;
+    </div>
+    `;
   };
 
   const loadProperties = async ({ field, query }) => {
     try {
-      setTimeout(async () => {
-        const bone = `
-        <div class="popup__element">
-        <div class="loader">
-              <div class="loader__ball"></div>
-              <div class="loader__bar loader__bar--1"></div>
-              <div class="loader__bar loader__bar--2"></div>
-              <div class="loader__bar loader__bar--3"></div>
-              <div class="loader__bar loader__bar--4"></div>
-              <div class="loader__bar loader__bar--5"></div>
-              </div>  
-              </div>
-              `;
+      remCustom();
+      const bone = `
+      <div class="popup__element">
+      <div class="loader">
+      <div class="loader__ball"></div>
+      <div class="loader__bar loader__bar--1"></div>
+      <div class="loader__bar loader__bar--2"></div>
+      <div class="loader__bar loader__bar--3"></div>
+      <div class="loader__bar loader__bar--4"></div>
+      <div class="loader__bar loader__bar--5"></div>
+      </div>  
+      </div>
+      `;
 
-        remCustom();
-        popupContent.insertAdjacentHTML("beforeend", bone);
-        popup.classList.add("popup--show");
-        spinController.startAnimation();
+      popupContent.insertAdjacentHTML("beforeend", bone);
+      spinController.startAnimation();
+      popup.classList.add("popup--show");
 
-        // Prepare
-        const myElm = await axios(`/api/v1/element/?${field}=${query}`);
-        const [elementProp] = myElm.data.data.elements;
+      // Prepare
+      const myElm = await axios(`/api/v1/element/?${field}=${query}`);
+      const [elementProp] = myElm.data.data.elements;
 
-        if (!elementProp) {
-          const al = document.querySelector(".alert");
-          al && al.remove();
-          const htm = ` 
+      if (!elementProp) {
+        const al = document.querySelector(".alert");
+        al && al.remove();
+        const htm = ` 
           <div class="alert alert--error">Sorry, no element found with that name</div>
         `;
-          popup.classList.remove("popup--show");
-          spinController.delInterval();
+        popup.classList.remove("popup--show");
+        spinController.delInterval();
 
-          container.insertAdjacentHTML("beforebegin", htm);
+        container.insertAdjacentHTML("beforebegin", htm);
 
-          return setTimeout(
-            () => document.querySelector(".alert").classList.add("alert--h"),
-            3000
-          );
+        return setTimeout(
+          () => document.querySelector(".alert").classList.add("alert--h"),
+          3000
+        );
+      }
+
+      const html = generateHtml(elementProp);
+
+      // Remove spinner and Render Element
+      spinController.delInterval();
+      document.querySelector(".popup__element").innerHTML = html;
+
+      // render element with appropriate height
+      const allHeadings = document.querySelectorAll(".elem__overview-heading");
+      const allH = [
+        ...document.querySelectorAll(".elem__overview-accordion"),
+      ].map((el) => getComputedStyle(el).height);
+
+      allH.forEach((h, i) => {
+        if (allHeadings.length > i + 1) {
+          allHeadings[i + 1].style.marginTop = h;
+          allHeadings[i + 1].dataset.tr = h;
         }
+      });
 
-        const html = generateHtml(elementProp);
+      elmRow = document.querySelector(".elem__row");
+      landscape = Number.parseFloat(getComputedStyle(elmRow).marginTop);
 
-        // Remove spinner and Render Element
-        setTimeout(() => {
-          spinController.delInterval();
-          document.querySelector(".popup__element").innerHTML = html;
+      if (landscape) {
+        elmRow.style.marginTop = allH[allH.length - 1];
+        elmRow.dataset.tr = allH[allH.length - 1];
+      }
 
-          // render element with appropriate height
-          const allHeadings = document.querySelectorAll(
-            ".elem__overview-heading"
-          );
-          const allH = [
-            ...document.querySelectorAll(".elem__overview-accordion"),
-          ].map((el) => getComputedStyle(el).height);
+      document.querySelector(".elem__overview").style.opacity = 1;
+      document.querySelectorAll("h3").forEach((el) => {
+        el.addEventListener("mouseenter", (e) => {
+          e.target.parentElement.style.animation =
+            "border-dance 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
+        });
 
-          allH.forEach((h, i) => {
-            if (allHeadings.length > i + 1) {
-              allHeadings[i + 1].style.marginTop = h;
-              allHeadings[i + 1].dataset.tr = h;
-            }
-          });
-
-          elmRow = document.querySelector(".elem__row");
-          landscape = Number.parseFloat(getComputedStyle(elmRow).marginTop);
-
-          if (landscape) {
-            elmRow.style.marginTop = allH[allH.length - 1];
-            elmRow.dataset.tr = allH[allH.length - 1];
-          }
-
-          document.querySelector(".elem__overview").style.opacity = 1;
-          document.querySelectorAll("h3").forEach((el) => {
-            el.addEventListener("mouseenter", (e) => {
-              e.target.parentElement.style.animation =
-                "border-dance 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
-            });
-
-            el.addEventListener("mouseleave", (e) => {
-              e.target.parentElement.style.animation =
-                "border-danc 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
-            });
-          });
-        }, 5000);
-      }, 200);
+        el.addEventListener("mouseleave", (e) => {
+          e.target.parentElement.style.animation =
+            "border-danc 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite";
+        });
+      });
     } catch (err) {
       console.log(err);
     }
