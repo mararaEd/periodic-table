@@ -369,7 +369,10 @@ export default () => {
 
       popupContent.insertAdjacentHTML("beforeend", bone);
       popup.classList.add("popup--show");
-      spinController.startAnimation();
+
+      setTimeout(function () {
+        spinController.startAnimation();
+      }, 300);
 
       // Prepare
       const myElm = await axios(`/api/v1/element/?${field}=${query}`);
@@ -382,7 +385,7 @@ export default () => {
           <div class="alert alert--error">Sorry, no element found with that name</div>
         `;
         popup.classList.remove("popup--show");
-        spinController.delInterval();
+        spinController.stopAnimation();
 
         container.insertAdjacentHTML("beforebegin", htm);
 

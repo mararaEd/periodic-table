@@ -15,6 +15,7 @@
   height: 3.96rem;
   background: var(--theme-he-text);
   transition: all 0.35s linear;
+  transform-origin: bottom;
 }
 
 .loader__ball {
@@ -28,7 +29,6 @@
   width: 0.7rem;
   height: 0.7rem;
   background: transparent;
-  transform: translateY(0.8rem) translateX(-1px);
   animation: var(--anim1);
 }
 
@@ -39,29 +39,28 @@
   height: 100%;
   border-radius: 50%;
   background: var(--theme-he-text);
-  animation: var(--anim2);
   z-index: 20000;
+  animation: var(--anim2);
 }
 
 .loader__bar--1 {
   grid-column: 1 / 2;
-  clip-path: inset(3.28rem 0 0 0);
+  transform: scaleY(0.155);
 }
 
 .loader__bar--2 {
   grid-column: 2 / 3;
-  clip-path: inset(2.46rem 0 0 0);
+  transform: scaleY(0.374);
 }
 .loader__bar--3 {
   grid-column: 3 / 4;
-  clip-path: inset(1.64rem 0 0 0);
+  transform: scaleY(0.583);
 }
 .loader__bar--4 {
   grid-column: 4 / 5;
-  clip-path: inset(0.82rem 0 0 0);
+  transform: scaleY(0.788);
 }
-
 .loader__bar--5 {
   grid-column: 5 / 6;
-  clip-path: inset(0 0 0 0);
+  transform: scaleY(1);
 }

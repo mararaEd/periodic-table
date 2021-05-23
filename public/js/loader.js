@@ -9,6 +9,7 @@ const setProperty = function (...values) {
 };
 
 const maintainA = function () {
+  console.log("now");
   t++;
   if (t === 3) {
     setProperty(
@@ -23,16 +24,14 @@ const maintainA = function () {
     elm.setProperty("--anim2", "moveD 0.35s linear");
     clipO
       .reverse()
-      .forEach(
-        (el, i) => (allLoaders[i].style.clipPath = `inset(${el}rem 0 0 0)`)
-      );
+      .forEach((el, i) => (allLoaders[i].style.transform = `scaleY(${el})`));
   }
 };
 
 // exports
 exports.startAnimation = function () {
   // variables
-  clipO = [3.28, 2.46, 1.64, 0.82, 0];
+  clipO = [0.155, 0.374, 0.583, 0.778, 1];
   animO = ["moveBx", "moveFx"];
   t = 0;
 
@@ -41,11 +40,10 @@ exports.startAnimation = function () {
   lBall = document.querySelector(".loader__ball");
 
   // starting
-  setProperty("moveFx 1.4s ease-in forwards", "moveFy 1.4s ease-in forwards");
   lBall.addEventListener("animationend", maintainA);
 };
 
 exports.stopAnimation = () => {
   lBall.removeEventListener("animationend", maintainA);
-  setProperty("", "");
+  setProperty("moveFx 1.4s ease-in forwards", "moveFy 1.4s ease-out forwards");
 };
