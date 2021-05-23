@@ -133,7 +133,7 @@ const init = () => {
         },
       });
 
-      spinController.delInterval();
+      spinController.stopAnimation();
 
       document.querySelector(".com-row-container").remove();
 

@@ -368,8 +368,8 @@ export default () => {
       `;
 
       popupContent.insertAdjacentHTML("beforeend", bone);
-      spinController.startAnimation();
       popup.classList.add("popup--show");
+      spinController.startAnimation();
 
       // Prepare
       const myElm = await axios(`/api/v1/element/?${field}=${query}`);
@@ -395,7 +395,7 @@ export default () => {
       const html = generateHtml(elementProp);
 
       // Remove spinner and Render Element
-      spinController.delInterval();
+      spinController.stopAnimation();
       document.querySelector(".popup__element").innerHTML = html;
 
       // render element with appropriate height

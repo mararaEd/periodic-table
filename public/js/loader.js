@@ -1,65 +1,51 @@
-let intervalId = "";
 const elm = document.documentElement.style;
+let t, animO, clipO, allLoaders, lBall;
 
+// functions
 const setProperty = function (...values) {
   values.forEach((val, i) => {
     elm.setProperty(`--anim${i + 1}`, val);
   });
 };
 
-const commonX = "0.35s ease-in forwards";
-const commonY = "0.35s ease-out forwards";
+const maintainA = function () {
+  t++;
+  if (t === 3) {
+    setProperty(
+      `${animO[0]} 1.4s ease-in forwards`,
+      "moveFy 1.4s ease-out forwards"
+    );
+    t = 0;
+    animO.reverse();
+  }
 
-exports.startAnimation = function (elmI) {
-  const clipO = [3.28, 2.46, 1.64, 0.82, 0];
-  const allLoaders = document.querySelectorAll(".loader__bar");
-  let i = 2;
-  let sec = false;
+  if (t === 1) {
+    elm.setProperty("--anim2", "moveD 0.35s linear");
+    clipO
+      .reverse()
+      .forEach(
+        (el, i) => (allLoaders[i].style.clipPath = `inset(${el}rem 0 0 0)`)
+      );
+  }
+};
 
-  const orderedA = [
-    {
-      x: `moveX ${commonX}`,
-      y: `moveY ${commonY}`,
-    },
-    {
-      x: `moveXO ${commonX}`,
-      y: `moveYO ${commonY}`,
-    },
-  ];
+// exports
+exports.startAnimation = function () {
+  // variables
+  clipO = [3.28, 2.46, 1.64, 0.82, 0];
+  animO = ["moveBx", "moveFx"];
+  t = 0;
 
-  setProperty(orderedA[0].x, orderedA[0].y);
+  // elements
+  allLoaders = document.querySelectorAll(".loader__bar");
+  lBall = document.querySelector(".loader__ball");
 
-  intervalId = setInterval(() => {
-    if (i === 1) {
-      setProperty(orderedA[1].x, orderedA[1].y);
-      orderedA.reverse();
-      return i++;
-    }
-
-    if (i === 5) {
-      clipO.reverse().forEach((el, i) => {
-        allLoaders[i].style.clipPath = `inset(${el}rem 0 0 0)`;
-      });
-
-      elm.setProperty("--anim2", "moveD 0.35s linear forwards");
-
-      sec = !sec;
-      return (i = 1);
-    }
-
-    setProperty(`moveX${i} ${commonX}`, `moveY${i} ${commonY}`);
-
-    if (sec) setProperty(`moveXO${i} ${commonX}`, `moveY${i} ${commonY}`);
-    i++;
-  }, 305);
+  // starting
+  setProperty("moveFx 1.4s ease-in forwards", "moveFy 1.4s ease-in forwards");
+  lBall.addEventListener("animationend", maintainA);
 };
 
 exports.stopAnimation = () => {
-  clearInterval(intervalId);
-  setProperty("", "");
-};
-
-exports.delInterval = () => {
-  clearInterval(intervalId);
+  lBall.removeEventListener("animationend", maintainA);
   setProperty("", "");
 };
