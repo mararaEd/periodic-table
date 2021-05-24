@@ -30,8 +30,6 @@ exports.startAnimation = () => {
   lBall.addEventListener("animationend", animation);
 };
 
-exports.stopAnimation = () => {
-  // removing event and element
+exports.stopAnimation = () =>
+  // removing event
   lBall.removeEventListener("animationend", animation);
-  document.querySelector(".loader").remove();
-};
