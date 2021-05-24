@@ -156,9 +156,9 @@ export default () => {
 
     if (e.target.matches(".btn--form")) {
       // get values
-      const prefs = [
-        ...document.querySelectorAll(".fform__default-text"),
-      ].map((el) => reversePref(el.textContent));
+      const prefs = [...document.querySelectorAll(".fform__default-text")].map(
+        (el) => reversePref(el.textContent)
+      );
 
       prefs.forEach((el, i) => (units[i].perference = el));
       localStorage.setItem("unitsP", prefs);
@@ -356,23 +356,20 @@ export default () => {
       remCustom();
       const bone = `
       <div class="popup__element">
-      <div class="loader">
-      <div class="loader__ball"></div>
-      <div class="loader__bar loader__bar--1"></div>
-      <div class="loader__bar loader__bar--2"></div>
-      <div class="loader__bar loader__bar--3"></div>
-      <div class="loader__bar loader__bar--4"></div>
-      <div class="loader__bar loader__bar--5"></div>
-      </div>  
+        <div class="loader">
+        <div class="loader__ball"></div>
+        <div class="loader__bar loader__bar--1"></div>
+        <div class="loader__bar loader__bar--2"></div>
+        <div class="loader__bar loader__bar--3"></div>
+        <div class="loader__bar loader__bar--4"></div>
+        <div class="loader__bar loader__bar--5"></div>
+        </div>  
       </div>
       `;
 
       popupContent.insertAdjacentHTML("beforeend", bone);
+      spinController.startAnimation();
       popup.classList.add("popup--show");
-
-      setTimeout(function () {
-        spinController.startAnimation();
-      }, 300);
 
       // Prepare
       const myElm = await axios(`/api/v1/element/?${field}=${query}`);

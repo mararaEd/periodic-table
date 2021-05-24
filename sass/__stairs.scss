@@ -10,12 +10,17 @@
 
 .loader__bar {
   z-index: 200;
-  grid-row: 1 / 2;
+  grid-row: 1/2;
   width: 0.6rem;
   height: 3.96rem;
   background: var(--theme-he-text);
-  transition: all 0.35s linear;
+  transition: all 0.35s ease-out;
   transform-origin: bottom;
+}
+
+.loader__ball,
+.loader__ball:after {
+  animation-fill-mode: forwards;
 }
 
 .loader__ball {
@@ -23,13 +28,15 @@
   z-index: 20000000;
   justify-self: start;
   align-self: center;
-  grid-row: 1 / 2;
-  grid-column: 1 / -1;
+  grid-row: 1/2;
+  grid-column: 1/-1;
   border-radius: 50%;
   width: 0.7rem;
   height: 0.7rem;
   background: transparent;
-  animation: var(--anim1);
+  animation-name: moveFx;
+  animation-duration: 1.4s;
+  animation-timing-function: ease-in;
 }
 
 .loader__ball:after {
@@ -40,27 +47,40 @@
   border-radius: 50%;
   background: var(--theme-he-text);
   z-index: 20000;
-  animation: var(--anim2);
+  animation-name: moveFy;
+  animation-duration: 1.75s;
+  animation-timing-function: ease-out;
+}
+
+.loader__ball--s {
+  animation-name: moveBx;
+}
+
+.loader__ball--s:after {
+  animation-name: moveFy2;
 }
 
 .loader__bar--1 {
-  grid-column: 1 / 2;
+  grid-column: 1/2;
   transform: scaleY(0.155);
 }
 
 .loader__bar--2 {
-  grid-column: 2 / 3;
+  grid-column: 2/3;
   transform: scaleY(0.374);
 }
+
 .loader__bar--3 {
-  grid-column: 3 / 4;
+  grid-column: 3/4;
   transform: scaleY(0.583);
 }
+
 .loader__bar--4 {
-  grid-column: 4 / 5;
+  grid-column: 4/5;
   transform: scaleY(0.788);
 }
+
 .loader__bar--5 {
-  grid-column: 5 / 6;
+  grid-column: 5/6;
   transform: scaleY(1);
 }

@@ -37,17 +37,11 @@
 }
 
 // stairs animation
-@keyframes moveD {
-  0% {
-    transform: translateY(-2.4rem);
-  }
-
-  100% {
-    transform: translateY(0.8rem);
-  }
-}
-
 @keyframes moveFx {
+  0% {
+    transform: translateX(-0.1rem);
+  }
+
   25% {
     transform: translateX(1.5rem);
   }
@@ -91,44 +85,106 @@
   /***************************
   ** 1st anim
   */
-  12.5% {
+  0% {
+    transform: translateY(0.8rem);
+  }
+
+  10% {
     transform: translateY(-0.4rem);
   }
 
-  25% {
+  20% {
     transform: translateY(0.1rem);
   }
 
   /***************************
   ** 2nd anim
   */
-  37.5% {
+  30% {
     transform: translateY(-0.94rem);
   }
 
-  50% {
+  40% {
     transform: translateY(-0.8rem);
   }
 
   /***************************
   ** 3rd anim
   */
-  62.5% {
+  50% {
     transform: translateY(-1.79rem);
   }
 
-  75% {
+  60% {
     transform: translateY(-1.65rem);
   }
 
   /***************************
   ** 4th anim
   */
-  87.5% {
+  70% {
     transform: translateY(-2.54rem);
   }
 
-  100% {
+  80% {
     transform: translateY(-2.4rem);
+  }
+
+  100% {
+    transform: translateY(0.8rem);
+  }
+}
+
+@keyframes moveFy2 {
+  /***************************
+  ** 1st anim
+  */
+  0% {
+    transform: translateY(0.8rem);
+  }
+
+  10% {
+    transform: translateY(-0.4rem);
+  }
+
+  20% {
+    transform: translateY(0.1rem);
+  }
+
+  /***************************
+  ** 2nd anim
+  */
+  30% {
+    transform: translateY(-0.94rem);
+  }
+
+  40% {
+    transform: translateY(-0.8rem);
+  }
+
+  /***************************
+  ** 3rd anim
+  */
+  50% {
+    transform: translateY(-1.79rem);
+  }
+
+  60% {
+    transform: translateY(-1.65rem);
+  }
+
+  /***************************
+  ** 4th anim
+  */
+  70% {
+    transform: translateY(-2.54rem);
+  }
+
+  80% {
+    transform: translateY(-2.4rem);
+  }
+
+  100% {
+    transform: translateY(0.8rem);
   }
 }
