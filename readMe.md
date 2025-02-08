@@ -12,7 +12,6 @@ This project is a **Periodic Table application** built with modern web technolog
 - **HTML** – For structuring the web pages.  
 - **CSS** – For styling and visual presentation.  
 - **JavaScript** – For interactivity and dynamic content.  
-- **Vite** – A build tool that provides a fast and optimized development experience.  
 
 ### Backend  
 - **Node.js** – JavaScript runtime for server-side logic.  
